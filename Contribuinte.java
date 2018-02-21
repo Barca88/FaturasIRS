@@ -1,3 +1,5 @@
+package FaturasIRS;
+
 import java.io.Serializable;
 
 public abstract class Contribuinte implements Serializable{
