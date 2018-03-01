@@ -1,0 +1,21 @@
+#BlueJ class context
+comment0.target=Coletivo
+comment1.params=nif
+comment1.target=Coletivo(int)
+comment2.params=nif\ email\ nome\ morada\ pwd
+comment2.target=Coletivo(int,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String)
+comment3.params=c
+comment3.target=Coletivo(Coletivo)
+comment4.params=
+comment4.target=getAtividades()
+comment5.params=
+comment5.target=double\ getDeducao()
+comment6.params=
+comment6.target=getFaturas()
+comment7.params=deducao
+comment7.target=void\ setDeducao(double)
+comment8.params=
+comment8.target=Coletivo\ clone()
+comment9.params=obj
+comment9.target=boolean\ equals(java.lang.Object)
+numComments=10
