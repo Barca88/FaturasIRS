@@ -1,35 +1,54 @@
 package FaturasIRS;
 
 
-/**
- * Write a description of class Fatura here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class Fatura
-{
-    // instance variables - replace the example below with your own
-    private int x;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
-    /**
-     * Constructor for objects of class Fatura
-     */
-    public Fatura()
-    {
-        // initialise instance variables
-        x = 0;
+import static java.time.LocalDate.now;
+
+public class Fatura {
+    private int nif_emitente;
+    private int nif_cliente;
+    private String nomeEmpresa;
+    private LocalDate datafatura;
+    private String descricao;
+    private double valorFact;
+    private double valorAPagar;
+    private ArrayList<int> listaAtividades;
+    private static double taxaImposto; // Acho que não precisamos disto porque esta dentro da atividade
+    
+    
+    // CLASS IMCOMPLETA
+
+    public Fatura(int nif,String nomeEmpresa, double valorFact, double tx){
+        this.nif = nif;
+        this.nomeEmpresa = nomeEmpresa;
+        this.datafatura = now();
+        this.taxaImposto = tx;
+        this.valorFact = valorFact;
+        this.valorAPagar = this.valorFact * (1+this.getTaxaImposto());
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    public Fatura(int nif, String nome, LocalDate data, double valorfact, double valorAPagar, double tx){
+        this.nif = nif;
+        this.nomeEmpresa = nome;
+        this.datafatura = data;
+        this.valorFact = valorfact;
+        this.valorAPagar = valorAPagar;
+        this.taxaImposto = tx;
+    }
+    public Fatura(Fatura f){
+        this.nif = f.getNif();
+        this.nomeEmpresa = f.getNome();
+        this.datafatura = f.getData();
+        this.valorFact = f.getValorFact();
+        this.valorAPagar = f.getValorPagar();
+        this.taxaImposto = f.getTaxaImposto();
+    }
+    public static double getTaxaImposto(){
+        return taxaImposto;
+    }
+    public static void setTaxaImposto(double tx){
+        taxaImposto = tx;
     }
 }
+
