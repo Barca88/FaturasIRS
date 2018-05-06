@@ -1,4 +1,4 @@
-package FaturasIRS;
+ 
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -8,36 +8,37 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class Faturacao implements Serializable {
-    private HashMap<int,Contribuinte> users;
-    private HashMap<long, Fatura> faturas;
+    private HashMap<int[],Contribuinte> users;
+    private Map<long[], Fatura> faturas;
     private Contribuinte logedIn;
 
     public Faturacao(){
-        this.users = new HashMap<int, Contribuinte>();
-        this.faturas = new HashMap<long, Fatura>();
+        this.users = new HashMap<int[], Contribuinte>();
+        this.faturas = new HashMap<long[], Fatura>();
         this.logedIn = null;
     }
-    public Faturacao(HashMap<int,Contribuinte> users, HashMap<long,Fatura> faturas,
+    public Faturacao(HashMap<int[],Contribuinte> users, HashMap<long[],Fatura> faturas,
                      Contribuinte logedIn){
         this.users = users;
         this.faturas = faturas;
         this.logedIn = logedIn;
     }
     public Faturacao(Faturacao f){
-        this.users = f.getUsers();
+        this.users = (HashMap)f.getUsers();
         this.faturas = f.getFaturas();
-        this.logedIn = f.getLog();
+        this.logedIn = f.getLogedIn();
     }
 
     //Getters
-    public Map<long, Contribuinte> getUsers() {
+    public Map<int[], Contribuinte> getUsers() {
         return this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(), c->c.getValue()));
     }
-    public Map<long, Fatura> getFaturas() {
+    public Map<long[], Fatura> getFaturas() {
         return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
     public Contribuinte getLogedIn() {
@@ -45,11 +46,11 @@ public class Faturacao implements Serializable {
     }
 
     //Setters
-    public void setUsers(HashMap<long, Contribuinte> users) {
+    public void setUsers(HashMap<long[], Contribuinte> users) {
         this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
 
-    public void setFaturas(HashMap<long, Fatura> faturas) {
+    public void setFaturas(HashMap<long[], Fatura> faturas) {
         this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
     public void setLogedIn(Contribuinte logedIn) {
@@ -96,7 +97,7 @@ public class Faturacao implements Serializable {
 
         if(this.users.containsKey(c.getNif())){
             throw new ContribuinteExistenteException ("Já existe este Contribuinte");
-        }else this.users.put(Contribuinte.getNif(),c);
+        }else ((Map)this.users).put(c.getNif(),c);
     }
 
     /**

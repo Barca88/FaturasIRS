@@ -1,6 +1,6 @@
  
 
-
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ public class Fatura implements Serializable{
     private String descricao;
     private double valorFact;
     private double valorAPagar;
-    private ArrayList<int> listaAtividades;
+    private ArrayList<int[]> listaAtividades;
     private static double taxaImposto; // Acho que não precisamos disto porque esta dentro da atividade
     
     
@@ -107,22 +107,22 @@ public class Fatura implements Serializable{
             return false;
         Fatura o = (Fatura) obj;
         return o.getNifEmi() == this.getNifEmi() && o.getNifCli() == this.getNifCli() && 
-        o.getNome() == this.getNomeEmpresa() &&
-        o.getDataFatura() == this.getDataFatura() && o.getValorFatura() == this.getValorFatura() && 
-        o.getValorAPagar() == this.getValorAPagar() &&
+        o.getNome() == this.getNome() &&
+        o.getData() == this.getData() && o.getValorFact() == this.getValorFact() && 
+        o.getValorPagar() == this.getValorPagar() &&
         o.getTaxaImposto() == this.getTaxaImposto();
         
     }
     public String ToString(){
         StringBuilder st= new StringBuilder();
-        st.append("Nif de Emitente: ").append(nifEmi).append("\n");
-        st.append("Nif de Cliente: ").append(nifCli).append("\n");
-        st.append("Nome de Empresa: ").append(nomeEmpresa).append("\n");
-        st.append("Data Fatura: ").append(dataFatura).append("\n");
-        st.append("Discriçao: ").append(discricao).append("\n");
-        st.append("Valor Factura: ").append(valorFact).append("\n");
-        st.append("Valor a Pagar: ").append(valorAPagar).append("\n");
-        st.append("Taxa de Imposto: ").append(taxaImposto).append("\n");
+        st.append("Nif de Emitente: ").append(this.nif_emitente).append("\n");
+        st.append("Nif de Cliente: ").append(this.nif_cliente).append("\n");
+        st.append("Nome de Empresa: ").append(this.nomeEmpresa).append("\n");
+        st.append("Data Fatura: ").append(this.datafatura).append("\n");
+        st.append("Discriçao: ").append(this.descricao).append("\n");
+        st.append("Valor Factura: ").append(this.valorFact).append("\n");
+        st.append("Valor a Pagar: ").append(this.valorAPagar).append("\n");
+        st.append("Taxa de Imposto: ").append(this.taxaImposto).append("\n");
         return st.toString();
     }
 }

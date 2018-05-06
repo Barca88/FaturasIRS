@@ -1,4 +1,4 @@
-package FaturasIRS;
+ 
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class Individuo extends Contribuinte implements Serializable{
     private int qDepAgre; //quantidade de depententes no Agregado Familiar
     private List<int[]> lContAgre;//lista de n contribuinte do agregado
     private double coeficiente;//coeficente fiscal
-    private ArrayList<Atividade> descontos; //códigos das atividades economicas que este individuo tem possibilidade de deduzir
+    private ArrayList<Atividade[]> descontos; //códigos das atividades economicas que este individuo tem possibilidade de deduzir
 
     //Construtor
     public Individuo(int nif){
@@ -20,11 +20,11 @@ public class Individuo extends Contribuinte implements Serializable{
         this.qDepAgre = 0;
         this.lContAgre = new ArrayList<int[]>();
         this.coeficiente = 0.0;
-        this.descontos = new ArrayList<Atividade>();
+        this.descontos = new ArrayList<Atividade[]>();
     }
     public Individuo(int nif, String email, String nome, String morada,
                      String pwd, int qDepAgre, List<int[]> lContAgre,
-                     double coeficiente, ArrayList<Atividade> descontos){
+                     double coeficiente, ArrayList<Atividade[]> descontos){
         super(nif, email, nome, morada, pwd);
         this.qDepAgre = qDepAgre;
         this.lContAgre = lContAgre;
@@ -49,7 +49,7 @@ public class Individuo extends Contribuinte implements Serializable{
     public double getCoeficiente() {
         return coeficiente;
     }
-    public ArrayList<Atividade> getDescontos() {
+    public ArrayList<Atividade[]> getDescontos() {
         return this.descontos.stream().collect(Collectors.toCollection(ArrayList::new));
     }
 

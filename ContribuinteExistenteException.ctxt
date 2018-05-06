@@ -1,0 +1,5 @@
+#BlueJ class context
+comment0.target=ContribuinteExistenteException
+comment1.params=message
+comment1.target=ContribuinteExistenteException(java.lang.String)
+numComments=2
