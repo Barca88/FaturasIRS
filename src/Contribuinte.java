@@ -68,8 +68,8 @@ public abstract class Contribuinte implements Serializable{
     }
 
     //Metodos
-    public abstract Contribuinte clone(){
-        return Contribuinte(this);
+    public Contribuinte clone(){
+        return new Contribuinte(this)
     };
     public boolean equals(Object obj){
         if (obj == this)
