@@ -1,4 +1,4 @@
- 
+
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class Faturacao implements Serializable {
-    private HashMap<int[],Contribuinte> users;
+    private Map<int[],Contribuinte> users;
     private Map<long[], Fatura> faturas;
     private Contribuinte logedIn;
 
@@ -22,24 +22,24 @@ public class Faturacao implements Serializable {
         this.faturas = new HashMap<long[], Fatura>();
         this.logedIn = null;
     }
-    public Faturacao(HashMap<int[],Contribuinte> users, HashMap<long[],Fatura> faturas,
+    public Faturacao(Map<int[],Contribuinte> users, Map<long[],Fatura> faturas,
                      Contribuinte logedIn){
         this.users = users;
         this.faturas = faturas;
         this.logedIn = logedIn;
     }
     public Faturacao(Faturacao f){
-        this.users = (HashMap)f.getUsers();
+        this.users = f.getUsers();
         this.faturas = f.getFaturas();
         this.logedIn = f.getLogedIn();
     }
 
     //Getters
     public Map<int[], Contribuinte> getUsers() {
-        return this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(), c->c.getValue()));
+        return this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
     public Map<long[], Fatura> getFaturas() {
-        return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
+        return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
     public Contribuinte getLogedIn() {
         return logedIn.clone();
