@@ -10,8 +10,7 @@
 public class Atividade
 {
     // instance variables - replace the example below with your own
-    private int x;
-
+    private int id;
     /**
      * Constructor for objects of class Atividade
      */

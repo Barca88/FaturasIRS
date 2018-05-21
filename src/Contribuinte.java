@@ -35,19 +35,19 @@ public abstract class Contribuinte implements Serializable{
 
     //Getters
     public int getNif() {
-        return nif;
+        return this.nif;
     }
     public String getEmail() {
-        return email;
+        return this.email;
     }
     public String getNome() {
-        return nome;
+        return this.nome;
     }
     public String getMorada() {
-        return morada;
+        return this.morada;
     }
     public String getPwd() {
-        return pwd;
+        return this.pwd;
     }
 
     //Setters
