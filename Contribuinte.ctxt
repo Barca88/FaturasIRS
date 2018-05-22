@@ -12,7 +12,6 @@ comment13.params=
 comment13.target=Contribuinte\ clone()
 comment14.params=obj
 comment14.target=boolean\ equals(java.lang.Object)
-comment14.text=\n\ \ \ \ public\ Contribuinte\ clone(){\n\ \ \ \ \ \ \ \ return\ new\ Contribuinte(this);\n};
 comment15.params=
 comment15.target=java.lang.String\ toString()
 comment2.params=nif\ email\ nome\ morada\ pwd

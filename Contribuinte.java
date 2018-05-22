@@ -2,7 +2,7 @@
 
 import java.io.Serializable;
 
-public abstract class Contribuinte implements Serializable{
+public class Contribuinte implements Serializable{
     // variaveis de instancia
     private int nif;
     private String email;
@@ -67,7 +67,7 @@ public abstract class Contribuinte implements Serializable{
     //Metodos
     
     public Contribuinte clone(){
-        Contribuinte c = Contribuinte(this);
+        Contribuinte c = new Contribuinte(this);
         return c;
     };
     public boolean equals(Object obj){
