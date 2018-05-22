@@ -11,46 +11,59 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.lang.Object;
+import java.time.LocalDate;
 
 public class Faturacao implements Serializable {
-    private Map<int[],Contribuinte> users;
-    private Map<long[], Fatura> faturas;
+    private Map<Integer,Contribuinte> users;
+    private Map<Long, Fatura> faturas;
+    private Map<Long, ArrayList<Fatura>> fatRegisto;
     private Contribuinte logedIn;
 
     public Faturacao(){
-        this.users = new HashMap<int[], Contribuinte>();
-        this.faturas = new HashMap<long[], Fatura>();
+        this.users = new HashMap<Integer, Contribuinte>();
+        this.faturas = new HashMap<Long, Fatura>();
+        this.fatRegisto = new HashMap<Long, ArrayList<Fatura>>();
         this.logedIn = null;
     }
-    public Faturacao(Map<int[],Contribuinte> users, Map<long[],Fatura> faturas,
+    public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas,
                      Contribuinte logedIn){
         this.users = users;
         this.faturas = faturas;
+        this.fatRegisto = new HashMap<Long, ArrayList<Fatura>>();
         this.logedIn = logedIn;
     }
     public Faturacao(Faturacao f){
         this.users = f.getUsers();
         this.faturas = f.getFaturas();
+        this.fatRegisto = f.getFatRegisto();
         this.logedIn = f.getLogedIn();
     }
 
     //Getters
-    public Map<int[], Contribuinte> getUsers() {
+    public Map<Integer, Contribuinte> getUsers() {
         return this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
-    public Map<long[], Fatura> getFaturas() {
+    public Map<Long, Fatura> getFaturas() {
         return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
     public Contribuinte getLogedIn() {
-        return logedIn.clone();
+        return this.logedIn.clone();
+    }
+    /**
+     * ==============================POR FAZER=============================== --TODO
+     */
+    public Map<Long, ArrayList<Fatura>> getFatRegisto() {
+        return this.fatRegisto; //FAZER CLONE DISTO!!!!!!!
     }
 
     //Setters
-    public void setUsers(HashMap<long[], Contribuinte> users) {
+    public void setUsers(HashMap<Long, Contribuinte> users) {
         this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
-
-    public void setFaturas(HashMap<long[], Fatura> faturas) {
+    public void setFaturas(HashMap<Long, Fatura> faturas) {
         this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
     public void setLogedIn(Contribuinte logedIn) {
@@ -90,6 +103,9 @@ public class Faturacao implements Serializable {
         fw.flush();
         fw.close();
     }
+    
+    /**====================Metodos========================*/
+    
     /**
      * Regista Contribuinte na aplicação --TODO criar a exeption
      */
@@ -120,5 +136,106 @@ public class Faturacao implements Serializable {
      */
     public void terminaSessao(){
         this.logedIn = null;
+    }
+    /**
+     * Cria uma factura.
+     */
+    public void novaFactura(int nif_cliente, String descricao, double valorFact, ArrayList<Integer> atividades, double taxaImposto)
+    throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        long idFatura = Collections.max(this.faturas.keySet(),null) + 1;
+        Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,this.logedIn.getNome(),descricao,valorFact,atividades,taxaImposto);
+        this.faturas.put(idFatura,f);
+    }
+    /**
+     * Devolve a lista das despesas emitidas em nome do individuo.
+     */
+    public ArrayList<Fatura> despesasEmitidas() throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        ArrayList<Fatura> despesas = new ArrayList<Fatura>();
+        for (Fatura f : this.faturas.values()){
+            if (this.logedIn.getNif() == f.getNifCli())
+                despesas.add(f.clone());
+        }
+        return despesas;
+    }
+    /**
+     * Devolve o montante de deduçao fiscal do agregado familiar do individuo.
+     * ==============================POR FAZER=============================== --TODO
+     */
+    public long deducaoFiscal () throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        return 1;
+    }
+    /**
+     * Associa uma classificaço de atividade economica a uma fatura
+     * ==============================POR FAZER=============================== --TODO
+     */
+    public void classificaFatura(long idFatura){
+    }
+    /**
+     * Corrige a classificaço de atividade economica de uma fatura
+     * ==============================POR FAZER=============================== --TODO
+     */
+    public void corrigeClassificaFatura(long idFatura){
+    }
+    /**
+     * Devolve a lista das facturas correspondentes a uma determinada empresa por data de emissao.
+     */
+    public ArrayList<Fatura> facturasEmpresaData(String nomeEmpresa){
+        ArrayList<Fatura> lista = new ArrayList<Fatura>();
+        for (Fatura f : this.faturas.values()){
+            if (f.getNome().equals(nomeEmpresa))
+                lista.add(f.clone());
+        }
+        Collections.sort(lista, new ComparadorDataFatura());
+        return lista;
+    }
+    /**
+     * Devolve a lista das facturas correspondentes a uma determinada empresa por valor.
+     */
+    public ArrayList<Fatura> facturasEmpresaValor(String nomeEmpresa){
+        ArrayList<Fatura> lista = new ArrayList<Fatura>();
+        for (Fatura f : this.faturas.values()){
+            if (f.getNome().equals(nomeEmpresa))
+                lista.add(f.clone());
+        }
+        Collections.sort(lista, new ComparadorValorFatura());
+        return lista;
+    }
+    /**
+     * Devolve a lista de facturas por contribuintes num determinado intervalo de tempo 
+     * (feito de forma a puder ser imprimido simplesmente atraves de um ciclo).
+     */
+    public ArrayList<Fatura> facturasContribuinteData(LocalDate in, LocalDate fin) throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        ArrayList<Fatura> lista = new ArrayList<Fatura>();
+        for (Fatura f : this.faturas.values()){
+            if(f.getData().isAfter(in) && f.getData().isBefore(fin)){
+                if(f.getNome().equals(this.logedIn.getNome())) lista.add(f.clone());
+            }
+        }
+        Collections.sort(lista, new ComparadorNifContribuinteFact());
+        return lista;
+    }
+    /**
+     * Devolve a lista de facturas por contribuintes por valor decrescente de despesa.
+     */
+    public Map<Integer,ArrayList<Fatura>> facturasContribuinteValor() throws SemAutorizacaoException{
+        if(this.logedIn instanceof Coletivo){
+            ArrayList<Fatura> lista =  new ArrayList<Fatura>();
+            Map<Integer,ArrayList<Fatura>> map = new HashMap<Integer, ArrayList<Fatura>>();
+            for (Fatura f : this.faturas.values()){
+                if(f.getNome().equals(this.logedIn.getNome())){
+                    if(map.containsKey(f.getNifCli())){
+                        lista = map.get(f.getNifCli());
+                        lista.add(f.clone());
+                        map.replace(f.getNifCli(),lista);
+                    }
+                }
+            }
+        return map;
+        }
+        else throw new SemAutorizacaoException("Utilizador nao autorizado");
     }
 }

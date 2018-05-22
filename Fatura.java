@@ -15,13 +15,13 @@ public class Fatura implements Serializable{
     private String descricao;
     private double valorFact;
     private double valorAPagar;
-    private ArrayList<int[]> listaAtividades;
+    private ArrayList<Integer> listaAtividades;
     private static double taxaImposto; // Acho que não precisamos disto porque esta dentro da atividade
 
 
     // CLASS IMCOMPLETA
     public Fatura(long id, int nifEmi, int nifCli, String nomeEmpresa, String descricao,
-            double valorFact, ArrayList<int[]> li, double tx){
+            double valorFact, ArrayList<Integer> li, double tx){
         this.id = id;
         this.nif_emitente = nifEmi;
         this.nif_cliente = nifCli;
@@ -30,7 +30,7 @@ public class Fatura implements Serializable{
         this.descricao = descricao;
         this.valorFact = valorFact;
         this.valorAPagar = this.valorFact * (1+this.getTaxaImposto());
-        this.listaAtividades = (ArrayList<int[]>) li.clone();
+        this.listaAtividades = (ArrayList<Integer>) li.clone();
         this.taxaImposto = tx;
     }
     public Fatura(Fatura f){
@@ -75,9 +75,9 @@ public class Fatura implements Serializable{
     public double getValorPagar(){
         return valorAPagar;
     }
-    public ArrayList<int[]> getListaAtividades() {
-        ArrayList<int[]> lista = new ArrayList<int[]>();
-        this.listaAtividades.forEach(e->lista.add(e.clone()));
+    public ArrayList<Integer> getListaAtividades() {
+        ArrayList<Integer> lista = new ArrayList<Integer>();
+        this.listaAtividades.forEach(e->lista.add(e));
         return lista;
     }
 
@@ -106,9 +106,9 @@ public class Fatura implements Serializable{
     public void setValorAPagar(double valorAPagar){
         valorAPagar= valorAPagar;
     }
-    public void setListaAtividades(ArrayList<int[]> listaAtividades) {
-        ArrayList<int[]> lista = new ArrayList<int[]>();
-        listaAtividades.forEach(e->lista.add(e.clone()));
+    public void setListaAtividades(ArrayList<Integer> listaAtividades) {
+        ArrayList<Integer> lista = new ArrayList<Integer>();
+        listaAtividades.forEach(e->lista.add(e));
         this.listaAtividades = lista;
     }
 
