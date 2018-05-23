@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Coletivo extends Contribuinte implements Serializable{
-    private List<int[]> atividades;
+    private List<Atividade[]> atividades;
     private double deducao;
     private List<long[]> faturas;//ids de faturas passadas por este objeto
 
     public Coletivo (int nif){
         super(nif,"","","","");
-        this.atividades = new ArrayList<int[]>();
+        this.atividades = new ArrayList<Atividade[]>();
         this.deducao = 0;
         this.faturas = new ArrayList<long[]>();
     }
     public Coletivo (int nif, String email, String nome, String morada, String pwd){
         super(nif, email, nome, morada, pwd);
-        this.atividades = new ArrayList<int[]>();
+        this.atividades = new ArrayList<Atividade[]>();
         this.deducao = 0;
         this.faturas = new ArrayList<long[]>();
     }
@@ -30,8 +30,8 @@ public class Coletivo extends Contribuinte implements Serializable{
     }
 
     //Getters
-    public List<int[]> getAtividades() {
-        return this.atividades.stream().collect(Collectors.toCollection(ArrayList::new));
+    public List<Atividade[]> getAtividades() {
+        return this.atividades.stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new));
     }
     public double getDeducao() {
         return deducao;
@@ -41,8 +41,8 @@ public class Coletivo extends Contribuinte implements Serializable{
     }
 
     //Setters
-    public void setAtividades(List<int[]> atividades) {
-        this.atividades = atividades.stream().collect(Collectors.toCollection(ArrayList::new));
+    public void setAtividades(List<Atividade[]> atividades) {
+        this.atividades = atividades.stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new));
     }
     public void setDeducao(double deducao) {
         this.deducao = deducao;

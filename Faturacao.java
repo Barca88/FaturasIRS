@@ -51,10 +51,14 @@ public class Faturacao implements Serializable {
         return this.logedIn.clone();
     }
     /**
-     * ==============================POR FAZER=============================== --TODO
+     * = Testar --TODO
      */
     public Map<Long, ArrayList<Fatura>> getFatRegisto() {
-        return this.fatRegisto; //FAZER CLONE DISTO!!!!!!!
+        return this.fatRegisto.entrySet()
+                              .stream()
+                              .collect(Collectors
+                                .toMap(e->e.getKey(),
+                                    e->e.getValue().stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new))));
     }
 
     //Setters

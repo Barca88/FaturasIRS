@@ -10,25 +10,30 @@
 public class Atividade
 {
     // instance variables - replace the example below with your own
-    private int x;
+    private int id;
+    private String nome;
+    private double deducao;
+    
     /**
      * Constructor for objects of class Atividade
      */
-    public Atividade()
-    {
-        // initialise instance variables
-        x = 0;
+    public Atividade(int id,String nome,double d){
+        this.id = id;
+        this.nome = nome;
+        this.deducao = d;
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    public Atividade(Atividade a){
+        this.id = a.getId();
+        this.nome = a.getNome();
+        this.deducao = a.getDeducao();
+    }
+    public int getId(){
+        return this.id;
+    }
+    public String getNome(){
+        return this.nome;
+    }
+    public double getDeducao(){
+        return this.deducao;
     }
 }
