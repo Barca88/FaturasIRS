@@ -173,7 +173,7 @@ public class Faturacao implements Serializable {
      * Devolve o montante de deduçao fiscal do agregado familiar do individuo.
      * ==============================POR FAZER=============================== --TODO
      */
-    public long deducaoFiscal () throws SemAutorizacaoException{
+    public long deducaoFiscalFamilia () throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         return 1;
     }
@@ -247,5 +247,15 @@ public class Faturacao implements Serializable {
         return map;
         }
         else throw new SemAutorizacaoException("Utilizador nao autorizado");
+    }
+    /**
+    * Devolve um int correspondente ao tipo de utilizador do "logedIn".
+    */
+    public int getTipoUtilizador(){
+    if (this.logedIn instanceof Individuo)
+      return 1;
+    if (this.logedIn instanceof Coletivo)
+      return 2;
+    return 0;
     }
 }

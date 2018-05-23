@@ -1,35 +1,57 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.io.Serializable;
 
+public class Menu implements Serializable{
 
+  private List<String> opcoes;
+  private int op;
 
-/**
- * Write a description of class Menu here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-public class Menu
-{
-    // instance variables - replace the example below with your own
-    private int x;
+  public Menu(String [] opcoes){
+    this.opcoes = new ArrayList<String>();
+    for (String op: opcoes)
+      this.opcoes.add(op);
+    this.op = 0;
+  }
 
-    /**
-     * Constructor for objects of class Menu
-     */
-    public Menu()
-    {
-        // initialise instance variables
-        x = 0;
+  public void executa (){
+    do {
+      showMenu();
+      this.op = lerOpcao();
+    } while (this.op == -1);
+  }
+
+  private void showMenu(){
+    System.out.println("\n *** Menu *** ");
+    for (int i = 0; i < this.opcoes.size();i++){
+      System.out.print(i+1);
+      System.out.print(" - ");
+      System.out.println(this.opcoes.get(i));
     }
+    System.out.println("0 - Sair");
+  }
 
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+  private int lerOpcao(){
+    int op;
+    Scanner is = new Scanner(System.in);
+
+    System.out.println("Opção: ");
+    try{
+      op = is.nextInt();
     }
+    catch (InputMismatchException e){
+      op = -1;
+    }
+    if (op<0||op>this.opcoes.size()){
+      System.out.println("Opção Inválida!");
+      op = -1;
+    }
+    return op;
+  }
+
+  public int getOpcao(){
+    return this.op;
+  }
 }
