@@ -256,4 +256,13 @@ public class FaturacaoApp
     private static void faturadoEmpresa(){
         String nomeEmpresa;
     }
+    
+    private static void novaFatura(){
+        int nif_cliente;
+        double valorFact, taxaImposto;
+        String descricao;
+        ArrayList<Integer> atividades = new ArrayList<Integer>();
+        Scanner input = new Scanner(System.in);
+        
+    }
 }
