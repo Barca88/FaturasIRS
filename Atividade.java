@@ -36,4 +36,9 @@ public class Atividade
     public double getDeducao(){
         return this.deducao;
     }
+    
+    public Atividade clone(){
+        return new Atividade(this);
+    }
+        
 }

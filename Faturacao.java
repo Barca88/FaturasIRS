@@ -1,5 +1,3 @@
-
-
 import java.io.Serializable;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,25 +18,29 @@ public class Faturacao implements Serializable {
     private Map<Integer,Contribuinte> users;
     private Map<Long, Fatura> faturas;
     private Map<Long, ArrayList<Fatura>> fatRegisto;
+    private Map<Integer, Atividade> atividades;
     private Contribuinte logedIn;
 
     public Faturacao(){
         this.users = new HashMap<Integer, Contribuinte>();
         this.faturas = new HashMap<Long, Fatura>();
         this.fatRegisto = new HashMap<Long, ArrayList<Fatura>>();
+        this.atividades = new HashMap<Integer, Atividade>();        
         this.logedIn = null;
     }
-    public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas,
-                     Contribuinte logedIn){
+    public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas, Map<Long, ArrayList<Fatura>> fatRegisto,
+                     Map<Integer, Atividade> atividades, Contribuinte logedIn){
         this.users = users;
         this.faturas = faturas;
-        this.fatRegisto = new HashMap<Long, ArrayList<Fatura>>();
+        this.fatRegisto = fatRegisto;
+        this.atividades = atividades;
         this.logedIn = logedIn;
     }
     public Faturacao(Faturacao f){
         this.users = f.getUsers();
         this.faturas = f.getFaturas();
         this.fatRegisto = f.getFatRegisto();
+        this.atividades = f.getAtividades();
         this.logedIn = f.getLogedIn();
     }
 
@@ -49,9 +51,6 @@ public class Faturacao implements Serializable {
     public Map<Long, Fatura> getFaturas() {
         return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
-    public Contribuinte getLogedIn() {
-        return this.logedIn.clone();
-    }
     /**
      * = Testar --TODO
      */
@@ -61,6 +60,16 @@ public class Faturacao implements Serializable {
                               .collect(Collectors
                                 .toMap(e->e.getKey(),
                                     e->e.getValue().stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new))));
+    }
+    public Map<Integer, Atividade> getAtividades(){
+        return this.atividades.values().stream().map(c->c.clone()).collect(Collectors.toMap(c->c.getId(),c->c));
+    }
+    public Contribuinte getLogedIn() {
+        return this.logedIn.clone();
+    }
+    public String getNomeAtividade(int i) throws SemAutorizacaoException {
+        if(!this.atividades.containsKey(i)) throw new SemAutorizacaoException("Atividade Inexistente");  
+        return this.atividades.get(i).getNome();
     }
 
     //Setters
@@ -111,22 +120,19 @@ public class Faturacao implements Serializable {
     /**====================Metodos========================*/
     
     /**
-     * Regista Contribuinte na aplicação --TODO criar a exeption
+     * Regista Contribuinte na aplicação
      */
     public void registarContribuinte(Contribuinte c) throws ContribuinteExistenteException{
-
         if(this.users.containsKey(c.getNif())){
             throw new ContribuinteExistenteException ("Já existe este Contribuinte");
         }else ((Map)this.users).put(c.getNif(),c);
     }
 
     /**
-     * Inicia sessao com nif e password. --TODO Exeption
+     * Inicia sessao com nif e password. 
      */
     public void iniciaSessao(int nif,String password) throws SemAutorizacaoException {
-
         if(this.logedIn == null){
-
             if(users.containsKey(nif)){
                 Contribuinte user = users.get(nif);
                 if (password.equals(user.getPwd())){
