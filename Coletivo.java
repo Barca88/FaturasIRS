@@ -43,16 +43,14 @@ public class Coletivo extends Contribuinte implements Serializable{
     }
 
     //Setters
-    public void setAtividades(List<Atividade[]> atividades) {
+    public void setAtividades(List<Integer> atividades) {
         this.atividades = atividades.stream()
-            .map(c->c.clone())
             .collect(Collectors.toCollection(ArrayList::new));
     }
     public void setDeducao(double deducao) {
         this.deducao = deducao;
     }
-
-    public void setFaturas(List<long[]> faturas) {
+    public void setFaturas(List<Long> faturas) {
         this.faturas = faturas.stream()
             .collect(Collectors.toCollection(ArrayList::new));
     }
