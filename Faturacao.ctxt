@@ -31,33 +31,35 @@ comment19.target=void\ novaFactura(int,\ java.lang.String,\ double,\ java.util.A
 comment19.text=\n\ Cria\ uma\ factura.\n
 comment2.params=users\ faturas\ fatRegisto\ atividades\ logedIn
 comment2.target=Faturacao(java.util.Map,\ java.util.Map,\ java.util.Map,\ java.util.Map,\ Contribuinte)
-comment20.params=
-comment20.target=java.util.ArrayList\ despesasEmitidas()
-comment20.text=\n\ Devolve\ a\ lista\ das\ despesas\ emitidas\ em\ nome\ do\ individuo.\n
+comment20.params=lista
+comment20.target=long\ maxFatura(java.util.Set)
 comment21.params=
-comment21.target=long\ deducaoFiscalFamilia()
-comment21.text=\n\ Devolve\ o\ montante\ de\ dedu\u00E7ao\ fiscal\ do\ agregado\ familiar\ do\ individuo.\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
-comment22.params=idFatura
-comment22.target=void\ classificaFatura(long)
-comment22.text=\n\ Associa\ uma\ classifica\u00E7o\ de\ atividade\ economica\ a\ uma\ fatura\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
+comment21.target=java.util.ArrayList\ despesasEmitidas()
+comment21.text=\n\ Devolve\ a\ lista\ das\ despesas\ emitidas\ em\ nome\ do\ individuo.\n
+comment22.params=
+comment22.target=long\ deducaoFiscalFamilia()
+comment22.text=\n\ Devolve\ o\ montante\ de\ dedu\u00E7ao\ fiscal\ do\ agregado\ familiar\ do\ individuo.\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
 comment23.params=idFatura
-comment23.target=void\ corrigeClassificaFatura(long)
-comment23.text=\n\ Corrige\ a\ classifica\u00E7o\ de\ atividade\ economica\ de\ uma\ fatura\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
-comment24.params=nomeEmpresa
-comment24.target=java.util.ArrayList\ facturasEmpresaData(java.lang.String)
-comment24.text=\n\ Devolve\ a\ lista\ das\ facturas\ correspondentes\ a\ uma\ determinada\ empresa\ por\ data\ de\ emissao.\n
+comment23.target=void\ classificaFatura(long)
+comment23.text=\n\ Associa\ uma\ classifica\u00E7o\ de\ atividade\ economica\ a\ uma\ fatura\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
+comment24.params=idFatura
+comment24.target=void\ corrigeClassificaFatura(long)
+comment24.text=\n\ Corrige\ a\ classifica\u00E7o\ de\ atividade\ economica\ de\ uma\ fatura\n\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=POR\ FAZER\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ --TODO\n
 comment25.params=nomeEmpresa
-comment25.target=java.util.ArrayList\ facturasEmpresaValor(java.lang.String)
-comment25.text=\n\ Devolve\ a\ lista\ das\ facturas\ correspondentes\ a\ uma\ determinada\ empresa\ por\ valor.\n
-comment26.params=in\ fin
-comment26.target=java.util.ArrayList\ facturasContribuinteData(java.time.LocalDate,\ java.time.LocalDate)
-comment26.text=\n\ Devolve\ a\ lista\ de\ facturas\ por\ contribuintes\ num\ determinado\ intervalo\ de\ tempo\ \n\ (feito\ de\ forma\ a\ puder\ ser\ imprimido\ simplesmente\ atraves\ de\ um\ ciclo).\n
-comment27.params=
-comment27.target=java.util.Map\ facturasContribuinteValor()
-comment27.text=\n\ Devolve\ a\ lista\ de\ facturas\ por\ contribuintes\ por\ valor\ decrescente\ de\ despesa.\n
+comment25.target=java.util.ArrayList\ facturasEmpresaData(java.lang.String)
+comment25.text=\n\ Devolve\ a\ lista\ das\ facturas\ correspondentes\ a\ uma\ determinada\ empresa\ por\ data\ de\ emissao.\n
+comment26.params=nomeEmpresa
+comment26.target=java.util.ArrayList\ facturasEmpresaValor(java.lang.String)
+comment26.text=\n\ Devolve\ a\ lista\ das\ facturas\ correspondentes\ a\ uma\ determinada\ empresa\ por\ valor.\n
+comment27.params=in\ fin
+comment27.target=java.util.ArrayList\ facturasContribuinteData(java.time.LocalDate,\ java.time.LocalDate)
+comment27.text=\n\ Devolve\ a\ lista\ de\ facturas\ por\ contribuintes\ num\ determinado\ intervalo\ de\ tempo\ \n\ (feito\ de\ forma\ a\ puder\ ser\ imprimido\ simplesmente\ atraves\ de\ um\ ciclo).\n
 comment28.params=
-comment28.target=int\ getTipoUtilizador()
-comment28.text=\n\ Devolve\ um\ int\ correspondente\ ao\ tipo\ de\ utilizador\ do\ "logedIn".\n
+comment28.target=java.util.Map\ facturasContribuinteValor()
+comment28.text=\n\ Devolve\ a\ lista\ de\ facturas\ por\ contribuintes\ por\ valor\ decrescente\ de\ despesa.\n
+comment29.params=
+comment29.target=int\ getTipoUtilizador()
+comment29.text=\n\ Devolve\ um\ int\ correspondente\ ao\ tipo\ de\ utilizador\ do\ "logedIn".\n
 comment3.params=f
 comment3.target=Faturacao(Faturacao)
 comment4.params=
@@ -73,4 +75,4 @@ comment8.params=
 comment8.target=Contribuinte\ getLogedIn()
 comment9.params=i
 comment9.target=java.lang.String\ getNomeAtividade(int)
-numComments=29
+numComments=30
