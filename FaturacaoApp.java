@@ -1,9 +1,9 @@
 import java.io.*;
 import java.util.*;
+import java.time.LocalDate;
 
 public class FaturacaoApp
 {
-    // instance variables - replace the example below with your own
     private FaturacaoApp () {}
     private static Faturacao fat;
     private static Menu menuprincipal, menucontribuinte, menuempresa, menuregistar;
@@ -80,35 +80,41 @@ public class FaturacaoApp
     }
     
     private static void imprimeMenuContribuinte(){
-        menucontribuinte.executa();
-        switch(menuempresa.getOpcao()){
-            case 1: minhasDespesas();
-                    break;
-            case 2: minhaDeducao();
-                    break;
-            case 3: deducaoFamiliar();
-                    break;
-            case 4: corrigirClassFat();
-                    break;
-            case 5: faturasEmpresa();
-                    break;
-            case 6: faturadoEmpresa();
-                    break;
-        }
+        do{
+            menucontribuinte.executa();
+            switch(menucontribuinte.getOpcao()){
+                    case 1: minhasDespesas();
+                            break;
+                    case 2: minhaDeducao();
+                            break;
+                    case 3: deducaoFamiliar();
+                            break;
+                    case 4: corrigirClassFat();
+                            break;
+                    case 5: faturasEmpresa();
+                            break;
+                    case 6: faturadoEmpresa();
+                            break;
+                    }
+        } while (menucontribuinte.getOpcao()!= 0);
+        if (menucontribuinte.getOpcao() == 0) fat.setLogedIn(null);
     }
     
     private static void imprimeMenuEmpresa(){
-        menuempresa.executa();
-        switch(menuempresa.getOpcao()){
-            case 1: novaFatura();
-                    break;
-            case 2: faturasTempo();
-                    break;
-            case 3: faturasValor();
-                    break;
-            case 4: faturadoEmpresa();
-                    break;
-        }
+        do{
+            menuempresa.executa();
+            switch(menuempresa.getOpcao()){
+                case 1: novaFatura();
+                        break;
+                case 2: faturasTempo();
+                        break;
+                case 3: faturasValor();
+                        break;
+                case 4: faturadoEmpresa();
+                        break;
+            }
+        } while (menuempresa.getOpcao()!= 0);
+        if (menuempresa.getOpcao() == 0) fat.setLogedIn(null);
     }
     
     private static void logIn(){
@@ -116,8 +122,7 @@ public class FaturacaoApp
         int nif;
         String password;
         
-        System.out.println("NIF: ");
-        nif = input.nextInt();
+        nif = lerInt("NIF: ");
 
         System.out.println("Password: ");
         password = input.nextLine();
@@ -131,7 +136,7 @@ public class FaturacaoApp
         finally{
             input.close();
         }
-        System.out.println("Login");
+        System.out.println("Logged In");
         switch(fat.getTipoUtilizador()){
             case 1: imprimeMenuContribuinte(); break;
             case 2: imprimeMenuEmpresa(); break;
@@ -150,8 +155,7 @@ public class FaturacaoApp
             return;
         }
         
-        System.out.println("Insira o seu nif: ");
-        nif = input.nextInt();
+        nif = lerInt("Insira o seu nif: ");
         
         System.out.println("Insira o seu email: ");
         email = input.nextLine();
@@ -190,26 +194,14 @@ public class FaturacaoApp
     private static void minhasDespesas(){
         try{
             ArrayList<Fatura> lista = fat.despesasEmitidas();
-            for(Fatura f : lista){
-                System.out.println("Id : " + f.getId() + "\n" +
-                                   "Empresa : " + f.getNome() + "\n" +
-                                   "Custo : " + f.getValorPagar() + "\n" +
-                                   "Atividades : " + "\n");
-                imprimeAtividades(f);
-            }
+            imprimeFaturas(lista);
             System.out.println("=====================================" + "\n");
         }
         catch(SemAutorizacaoException e){
-            System.out.println(e.getMessage());
+           System.out.println(e.getMessage());
         }
     }
     
-        private static void imprimeAtividades(Fatura f){
-            for(Integer a : f.getListaAtividades()){
-                System.out.println("->" + fat.getNomeAtividade(a) + ";" + "\n");
-            }
-        }
-        
     private static void minhaDeducao(){
     }
     
@@ -242,13 +234,7 @@ public class FaturacaoApp
         }
         
         System.out.println("As faturas correspondentes a empresa " + nomeEmpresa + " sao:" + "\n");
-        for(Fatura f : lista){
-                System.out.println("Id : " + f.getId() + "\n" +
-                                   "Empresa : " + f.getNome() + "\n" +
-                                   "Custo : " + f.getValorPagar() + "\n" +
-                                   "Atividades : " + "\n");
-                imprimeAtividades(f);
-        }
+        imprimeFaturas(lista);
         
         input.close();
     }
@@ -256,4 +242,139 @@ public class FaturacaoApp
     private static void faturadoEmpresa(){
         String nomeEmpresa;
     }
+    
+    private static void novaFatura(){
+        int nif_cliente, n_atividades;
+        double valorFact, taxaImposto;
+        String descricao;
+        ArrayList<Integer> atividades = new ArrayList<Integer>();
+        Scanner input = new Scanner(System.in);
+        
+        nif_cliente = lerInt("Insira o seu nif do cliente: ");
+        
+        System.out.println("Insira uma descriçao: ");
+        descricao = input.nextLine();
+        
+        valorFact = lerDouble("Insira o factor de deduçao: ");
+        
+        n_atividades = lerInt("Insira o nº de atividades economicas diferentes envolvidas: ");
+        
+        System.out.println("Insira os identificadores dos tipos de atividade economica: ");
+        while(n_atividades > 0){
+            atividades.add(lerInt(null));
+            n_atividades --;
+        }
+        
+        taxaImposto = lerDouble("Insira a taxa de imposto: ");
+        
+        try{
+            fat.novaFactura(nif_cliente, descricao, valorFact, atividades, taxaImposto);
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            input.close();
+        }
+    }
+    
+    private static void faturasTempo(){
+        ArrayList<Fatura> lista = new ArrayList<Fatura>();
+        Scanner input = new Scanner(System.in);
+        
+        System.out.println("Indique a data inicial: ");
+        int ano = lerInt("Ano: ");
+        int mes = lerInt("Mês: ");
+        int dia = lerInt("Dia: ");
+        
+        LocalDate inicio = LocalDate.of(ano,mes,dia);
+        
+        System.out.println("Indique a data final: ");
+        ano = lerInt("Ano: ");
+        mes = lerInt("Mês: ");
+        dia = lerInt("Dia: ");
+        
+        LocalDate fim = LocalDate.of(ano,mes,dia);
+        
+        try{
+            lista = fat.facturasContribuinteData(inicio,fim);
+            System.out.println("As facturas correspondentes a sua empresa no intervalo de tempo dado sao:" + "\n");
+            imprimeFaturas(lista);
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
+        finally{
+            input.close();
+        }
+    }
+    
+    private static void faturasValor(){
+        Map<Integer,ArrayList<Fatura>> lista = new HashMap<Integer,ArrayList<Fatura>>();
+        try{
+            lista = fat.facturasContribuinteValor();
+            lista.values().forEach(c->imprimeFaturas(c));
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    
+        private static void imprimeAtividades(Fatura f){
+            try{
+                for(Integer a : f.getListaAtividades()){
+                    System.out.println("->" + fat.getNomeAtividade(a) + ";" + "\n");
+                }
+            }
+            catch(SemAutorizacaoException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    
+        private static void imprimeFaturas(ArrayList<Fatura> lista){
+            for(Fatura f : lista){
+                System.out.println("Id : " + f.getId() + "\n" +
+                                   "Empresa : " + f.getNome() + "\n" +
+                                   "Custo : " + f.getValorPagar() + "\n" +
+                                   "Atividades : " + "\n");
+                imprimeAtividades(f);
+            }
+        }
+        
+        private static double lerDouble(String msg){
+            Scanner input = new Scanner(System.in);
+            double r = 0;
+            
+            if(msg != null)System.out.println(msg);
+            try{
+                r= input.nextDouble();
+            }
+            catch(InputMismatchException e){
+                System.out.println("Formato errado!");
+                r = lerDouble(msg);
+            }
+            finally {
+                input.close();
+            }
+            return r;
+        }
+  
+        private static int lerInt(String msg){
+            Scanner input = new Scanner(System.in);
+            int r = 0;
+               
+            if(msg != null)System.out.println(msg);
+            try{
+                r = input.nextInt();
+            }
+            catch (InputMismatchException e){
+                System.out.println("Formato errado!");
+                r = lerInt(msg);
+            }
+            finally{
+                input.close();
+            }
+            return r;
+        }
+        
 }

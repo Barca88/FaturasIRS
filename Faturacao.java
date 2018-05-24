@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.lang.Object;
 import java.time.LocalDate;
+import java.util.Set;
 
 public class Faturacao implements Serializable {
     private Map<Integer,Contribuinte> users;
@@ -80,7 +81,7 @@ public class Faturacao implements Serializable {
         this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
     }
     public void setLogedIn(Contribuinte logedIn) {
-        this.logedIn = logedIn.clone();
+        this.logedIn = logedIn;
     }
 
     /**
@@ -152,11 +153,24 @@ public class Faturacao implements Serializable {
      */
     public void novaFactura(int nif_cliente, String descricao, double valorFact, ArrayList<Integer> atividades, double taxaImposto)
     throws SemAutorizacaoException{
+        long idFatura;
         if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
-        long idFatura = Collections.max(this.faturas.keySet(),null) + 1;
-        Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,this.logedIn.getNome(),descricao,valorFact,atividades,taxaImposto);
-        this.faturas.put(idFatura,f);
+        if(this.faturas.equals(null)){ idFatura = 1;}
+        else{
+            idFatura = maxFatura(this.faturas.keySet()) + 1;
+            Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,this.logedIn.getNome(),descricao,valorFact,atividades,taxaImposto);
+            this.faturas.put(idFatura,f);
+        }
     }
+        private static long maxFatura(Set<Long> lista){
+            long max = 0;
+            for (long value : lista) {
+                if (value > max) {
+                    max = value;
+                }  
+            }
+            return max;
+        }
     /**
      * Devolve a lista das despesas emitidas em nome do individuo.
      */
