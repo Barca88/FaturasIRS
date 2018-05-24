@@ -6,21 +6,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Coletivo extends Contribuinte implements Serializable{
-    private List<Atividade[]> atividades;
+    private List<Integer> atividades;
     private double deducao;
-    private List<long[]> faturas;//ids de faturas passadas por este objeto
+    private List<Long> faturas;//ids de faturas passadas por este objeto
 
     public Coletivo (int nif){
         super(nif,"","","","");
-        this.atividades = new ArrayList<Atividade[]>();
+        this.atividades = new ArrayList<Integer>();
         this.deducao = 0;
-        this.faturas = new ArrayList<long[]>();
+        this.faturas = new ArrayList<Long>();
     }
     public Coletivo (int nif, String email, String nome, String morada, String pwd){
         super(nif, email, nome, morada, pwd);
-        this.atividades = new ArrayList<Atividade[]>();
+        this.atividades = new ArrayList<Integer>();
         this.deducao = 0;
-        this.faturas = new ArrayList<long[]>();
+        this.faturas = new ArrayList<Long>();
     }
     public Coletivo ( Coletivo c){
         super(c);
@@ -30,26 +30,31 @@ public class Coletivo extends Contribuinte implements Serializable{
     }
 
     //Getters
-    public List<Atividade[]> getAtividades() {
-        return this.atividades.stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new));
+    public List<Integer> getAtividades() {
+        return this.atividades.stream()
+            .collect(Collectors.toCollection(ArrayList::new));
     }
     public double getDeducao() {
         return deducao;
     }
-    public List<long[]> getFaturas() {
-        return this.faturas.stream().collect(Collectors.toCollection(ArrayList::new));
+    public List<Long> getFaturas() {
+        return this.faturas.stream()
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 
     //Setters
     public void setAtividades(List<Atividade[]> atividades) {
-        this.atividades = atividades.stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new));
+        this.atividades = atividades.stream()
+            .map(c->c.clone())
+            .collect(Collectors.toCollection(ArrayList::new));
     }
     public void setDeducao(double deducao) {
         this.deducao = deducao;
     }
 
     public void setFaturas(List<long[]> faturas) {
-        this.faturas = faturas.stream().collect(Collectors.toCollection(ArrayList::new));
+        this.faturas = faturas.stream()
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 
     //Metodos
