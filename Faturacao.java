@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.Collections;
+import java.util.List;
 import java.util.ArrayList;
 import java.lang.Object;
 import java.time.LocalDate;
@@ -18,29 +20,29 @@ import java.util.Set;
 public class Faturacao implements Serializable {
     private Map<Integer,Contribuinte> users;
     private Map<Long, Fatura> faturas;
-    private Map<Long, ArrayList<Fatura>> fatRegisto;
+    private Historico hist;
     private Map<Integer, Atividade> atividades;
     private Contribuinte logedIn;
 
     public Faturacao(){
         this.users = new HashMap<Integer, Contribuinte>();
         this.faturas = new HashMap<Long, Fatura>();
-        this.fatRegisto = new HashMap<Long, ArrayList<Fatura>>();
+        this.hist = new Historico();
         this.atividades = new HashMap<Integer, Atividade>();        
         this.logedIn = null;
     }
-    public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas, Map<Long, ArrayList<Fatura>> fatRegisto,
+    public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas, Historico hist,
                      Map<Integer, Atividade> atividades, Contribuinte logedIn){
         this.users = users;
         this.faturas = faturas;
-        this.fatRegisto = fatRegisto;
+        this.hist = hist;
         this.atividades = atividades;
         this.logedIn = logedIn;
     }
     public Faturacao(Faturacao f){
         this.users = f.getUsers();
         this.faturas = f.getFaturas();
-        this.fatRegisto = f.getFatRegisto();
+        this.hist = f.getHist();
         this.atividades = f.getAtividades();
         this.logedIn = f.getLogedIn();
     }
@@ -52,16 +54,18 @@ public class Faturacao implements Serializable {
     public Map<Long, Fatura> getFaturas() {
         return this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
-    /**
-     * = Testar --TODO
-     */
+    public Historico getHist() {
+        return new Historico(this.hist);
+    }
+    /*
     public Map<Long, ArrayList<Fatura>> getFatRegisto() {
-        return this.fatRegisto.entrySet()
+        return this.hist.getHist().entrySet()
                               .stream()
                               .collect(Collectors
                                 .toMap(e->e.getKey(),
                                     e->e.getValue().stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new))));
-    }
+    }*/
+    
     public Map<Integer, Atividade> getAtividades(){
         return this.atividades.values().stream().map(c->c.clone()).collect(Collectors.toMap(c->c.getId(),c->c));
     }
@@ -85,11 +89,11 @@ public class Faturacao implements Serializable {
     }
     //ToString
     
-    public String Tostring(){
+    public String toString(){
         StringBuilder st= new StringBuilder();
         st.append("Users:").append(this.users).append("\n");
         st.append("Faturas:").append(this.faturas).append("\n");
-        st.append("Registo de Faturas:").append(this.fatRegisto).append("\n");
+        st.append("Registo de Faturas:").append(this.hist).append("\n");
         st.append("Atividades:").append(this.atividades).append("\n");
         return st.toString();
         
@@ -174,15 +178,15 @@ public class Faturacao implements Serializable {
             this.faturas.put(idFatura,f);
         }
     }
-        private static long maxFatura(Set<Long> lista){
-            long max = 0;
-            for (long value : lista) {
-                if (value > max) {
-                    max = value;
-                }  
-            }
-            return max;
+    private static long maxFatura(Set<Long> lista){
+        long max = 0;
+        for (long value : lista) {
+            if (value > max) {
+                max = value;
+            }  
         }
+        return max;
+    }
     /**
      * Devolve a lista das despesas emitidas em nome do individuo.
      */
@@ -201,19 +205,44 @@ public class Faturacao implements Serializable {
      */
     public long deducaoFiscalFamilia () throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        int nif = this.logedIn.getNif();
+        Individuo u = (Individuo)this.users.get(nif);
+        List<Integer> lista = u.getlContAgre();
+        lista.add(logedIn.getNif());
+        ArrayList<Fatura> list = this.faturas.values().stream()
+                                                      .filter(f->lista.contains(f.getNifCli()))
+                                                      .filter(f->f.dedutivel())
+                                                      .map(c->c.clone())
+                                                      .collect(Collectors.toCollection(ArrayList::new));
+        
         return 1;
     }
+    public double deducaoFatura(Fatura f){
+        return 0;
+    }
+        
     /**
      * Associa uma classificaço de atividade economica a uma fatura
-     * ==============================POR FAZER=============================== --TODO
+     * 1º preguntar qual e a fatura a editar
+     * 2º buscar as possiveis actividades
+     * 3º corrijir a classificaçao com o id da fatura e o id da atividade
+     *  --TODO
      */
-    public void classificaFatura(long idFatura){
+    public List<Integer> getActPossiveis(long idFatura){
+        Fatura f = this.faturas.get(idFatura);
+        Coletivo c = (Coletivo)this.users.get(f.getNifEmi());
+        return c.getAtividades();
     }
-    /**
-     * Corrige a classificaço de atividade economica de uma fatura
-     * ==============================POR FAZER=============================== --TODO
-     */
-    public void corrigeClassificaFatura(long idFatura){
+    public void corrigeClassificaFatura(long idFatura, int atividade) throws SemAutorizacaoException{
+        Fatura f = this.faturas.get(idFatura);
+        if(((Coletivo)this.users.get(f.getNifEmi())).getAtividades().contains(atividade) && 
+                this.atividades.containsKey(atividade)){
+            this.hist.add(f);
+            ArrayList<Integer> aux = new ArrayList<Integer>();
+            aux.add(atividade);
+            f.setListaAtividades(aux);
+            this.faturas.replace(idFatura,f);
+        }else throw new SemAutorizacaoException("Atividade Proibida!");                 
     }
     /**
      * Devolve a lista das facturas correspondentes a uma determinada empresa por data de emissao.

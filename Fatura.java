@@ -113,6 +113,12 @@ public class Fatura implements Serializable{
     }
 
     //Metodos
+    public boolean dedutivel(){
+        if(this.listaAtividades.size() == 1){
+            return true;
+        }
+        return false;
+    }
     public Fatura clone(){
         return new Fatura(this);
     }
@@ -132,7 +138,7 @@ public class Fatura implements Serializable{
                o.getTaxaImposto() == this.getTaxaImposto();
 
     }
-    public String ToString(){
+    public String toString(){
         StringBuilder st= new StringBuilder();
         st.append("Nif de Emitente: ").append(this.nif_emitente).append("\n");
         st.append("Nif de Cliente: ").append(this.nif_cliente).append("\n");

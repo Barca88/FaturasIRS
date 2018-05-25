@@ -10,21 +10,21 @@ public class Individuo extends Contribuinte implements Serializable{
     // Var. de instancia
 
     private int qDepAgre; //quantidade de depententes no Agregado Familiar
-    private List<int[]> lContAgre;//lista de n contribuinte do agregado
+    private List<Integer> lContAgre;//lista de n contribuinte do agregado
     private double coeficiente;//coeficente fiscal
-    private ArrayList<Atividade[]> descontos; //códigos das atividades economicas que este individuo tem possibilidade de deduzir
+    private ArrayList<Integer> descontos; //códigos das atividades economicas que este individuo tem possibilidade de deduzir
 
     //Construtor
     public Individuo(int nif){
         super(nif,"","","","");
         this.qDepAgre = 0;
-        this.lContAgre = new ArrayList<int[]>();
+        this.lContAgre = new ArrayList<Integer>();
         this.coeficiente = 0.0;
-        this.descontos = new ArrayList<Atividade[]>();
+        this.descontos = new ArrayList<Integer>();
     }
     public Individuo(int nif, String email, String nome, String morada,
-                     String pwd, int qDepAgre, List<int[]> lContAgre,
-                     double coeficiente, ArrayList<Atividade[]> descontos){
+                     String pwd, int qDepAgre, List<Integer> lContAgre,
+                     double coeficiente, ArrayList<Integer> descontos){
         super(nif, email, nome, morada, pwd);
         this.qDepAgre = qDepAgre;
         this.lContAgre = lContAgre;
@@ -43,13 +43,13 @@ public class Individuo extends Contribuinte implements Serializable{
     public int getqDepAgre() {
         return qDepAgre;
     }
-    public List<int[]> getlContAgre(){
+    public List<Integer> getlContAgre(){
         return this.lContAgre.stream().collect(Collectors.toCollection(ArrayList::new));
     }
     public double getCoeficiente() {
         return coeficiente;
     }
-    public ArrayList<Atividade[]> getDescontos() {
+    public ArrayList<Integer> getDescontos() {
         return this.descontos.stream().collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -57,13 +57,13 @@ public class Individuo extends Contribuinte implements Serializable{
     public void setqDepAgre(int qDepAgre) {
         this.qDepAgre = qDepAgre;
     }
-    public void setlContAgre(List<int[]> lContAgre) {
+    public void setlContAgre(List<Integer> lContAgre) {
         this.lContAgre.stream().collect(Collectors.toCollection(ArrayList::new));
     }
     public void setCoeficiente(double coeficiente) {
         this.coeficiente = coeficiente;
     }
-    public void setDescontos(List<Atividade> descontos) {
+    public void setDescontos(List<Integer> descontos) {
         this.descontos.stream().collect(Collectors.toCollection(ArrayList::new));
     }
 
