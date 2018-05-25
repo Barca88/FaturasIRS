@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=Historico
+comment0.text=\n\ Classe\ Utilizada\ apenas\ para\ guardar\ o\ historico\ de\ classifica\u00E7oes\ das\ faturas\ quando\ esta\ sofre\ mudan\u00E7as\ nas\ atividades\n\n\ @author\ Grupo\ 51\n
+comment1.params=
+comment1.target=Historico()
+comment1.text=\n\ Construtores\n
+comment2.params=m
+comment2.target=Historico(java.util.HashMap)
+comment3.params=h
+comment3.target=Historico(Historico)
+comment4.params=
+comment4.target=java.util.HashMap\ getHist()
+comment5.params=f
+comment5.target=void\ add(Fatura)
+numComments=6
