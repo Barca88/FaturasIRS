@@ -83,7 +83,19 @@ public class Faturacao implements Serializable {
     public void setLogedIn(Contribuinte logedIn) {
         this.logedIn = logedIn;
     }
-
+    //ToString
+    
+    public String Tostring(){
+        StringBuilder st= new StringBuilder();
+        st.append("Users:").append(this.users).append("\n");
+        st.append("Faturas:").append(this.faturas).append("\n");
+        st.append("Registo de Faturas:").append(this.fatRegisto).append("\n");
+        st.append("Atividades:").append(this.atividades).append("\n");
+        return st.toString();
+        
+    }
+    
+    //
     /**
      * Gravar o estado da aplicação num determinado ficheiro.
      */
