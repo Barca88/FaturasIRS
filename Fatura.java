@@ -15,7 +15,7 @@ public class Fatura implements Serializable{
     private String descricao;
     private double valorFact;
     private ArrayList<Integer> listaAtividades;
-    private static double taxaImposto; // Acho que não precisamos disto porque esta dentro da atividade
+    private static double taxaImposto; 
 
 
     // CLASS IMCOMPLETA
