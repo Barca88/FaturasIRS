@@ -4,20 +4,23 @@ import java.time.LocalDate;
 
 public class FaturacaoApp
 {
-    private FaturacaoApp () {}
     private static Faturacao fat;
-    private static Menu menuprincipal, menucontribuinte, menuempresa, menuregistar;
+    private static Menu menuprincipal, menucontribuinte, 
+                menuempresa, menuregistar;
     
     public static void main(String [] args){
+        String file_name = "faturacao_estado";
         carregarDados();
         carregarMenus();
         imprimeMenuPrincipal();
         try{
             fat.gravaObj();
+            fat.log("log.txt",true);
         }
         catch(IOException e){
             System.out.println("Não foi possivel gravar os dados");
         }
+        System.out.println("Até á proxima!");
     }
     
     private static void carregarDados(){

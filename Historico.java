@@ -52,4 +52,10 @@ public class Historico
         }
     }
 
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Historico: ").append(hist).append("\n");
+        return sb.toString();
+    }
+
 }

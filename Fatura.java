@@ -123,22 +123,28 @@ public class Fatura implements Serializable{
         if (( obj == null) || (obj.getClass() != this.getClass()))
             return false;
         Fatura o = (Fatura) obj;
-        return o.getNifEmi() == this.getNifEmi() &&
+        return o.getId() == this.getId() &&
+               o.getNifEmi() == this.getNifEmi() &&
                o.getNifCli() == this.getNifCli() &&
                o.getNome() == this.getNome() &&
                o.getData() == this.getData() &&
+               o.getDescricao() == this.getDescricao() &&
                o.getValorFact() == this.getValorFact() &&
+               o.getListaAtividades().equals(this.getListaAtividades()) &&
                o.getTaxaImposto() == this.getTaxaImposto();
 
     }
+
     public String toString(){
         StringBuilder st= new StringBuilder();
+        st.append("Id: ").append(this.id).append("\n");
         st.append("Nif de Emitente: ").append(this.nif_emitente).append("\n");
         st.append("Nif de Cliente: ").append(this.nif_cliente).append("\n");
         st.append("Nome de Empresa: ").append(this.nomeEmpresa).append("\n");
         st.append("Data Fatura: ").append(this.datafatura).append("\n");
         st.append("Discriçao: ").append(this.descricao).append("\n");
         st.append("Valor Factura: ").append(this.valorFact).append("\n");
+        st.append("Atividades: ").append(this.listaAtividades).append("\n");
         st.append("Taxa de Imposto: ").append(this.taxaImposto).append("\n");
         return st.toString();
     }

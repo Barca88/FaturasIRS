@@ -59,13 +59,24 @@ public class Coletivo extends Contribuinte implements Serializable{
     public Coletivo clone(){
         return new Coletivo(this);
     }
+
     public boolean equals (Object obj){
         if(this == obj)
             return true;
         if(obj == null || this.getClass() != obj.getClass())
             return false;
         Coletivo c = (Coletivo) obj;
-        return  super.equals(c);
+        return  super.equals(c) && 
+                c.getAtividades().equals(this.getAtividades()) &&
+                c.getDeducao() == this.getDeducao() &&
+                c.getFaturas().equals(this.getFaturas());
+    }
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Atividades: ").append(atividades).append("\n");
+        sb.append("Deduçao: ").append(deducao).append("\n");
+        sb.append("Faturas: ").append(faturas).append("\n");
+        return sb.toString();
     }
 }
 

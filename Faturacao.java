@@ -88,12 +88,11 @@ public class Faturacao implements Serializable {
         this.logedIn = logedIn;
     }
     //ToString
-
     public String toString(){
         StringBuilder st= new StringBuilder();
         st.append("Users:").append(this.users).append("\n");
         st.append("Faturas:").append(this.faturas).append("\n");
-        st.append("Registo de Faturas:").append(this.hist).append("\n");
+        st.append("Historico:").append(this.hist).append("\n");
         st.append("Atividades:").append(this.atividades).append("\n");
         return st.toString();
 
@@ -105,7 +104,7 @@ public class Faturacao implements Serializable {
      */
     public void gravaObj() throws IOException {
         ObjectOutputStream sv = new ObjectOutputStream(new
-                FileOutputStream("faturacao_estado"));
+        FileOutputStream("faturacao_estado"));
         sv.writeObject(this);
         sv.flush();
         sv.close();
@@ -205,7 +204,7 @@ public class Faturacao implements Serializable {
      * Map<IdAtividade,total de deduçao daquele tipo de atividade> isto porque as atividades tem limite de deduçao
      * Falta talvez por uma variavel na atividade com o maximo dedutivel(sim isto existe)
      */
-    public Map<Integer,double> deducaoFiscalFamilia () throws SemAutorizacaoException{
+    public Map<Integer,Double> deducaoFiscalFamilia () throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         int nif = this.logedIn.getNif();
         Individuo u = (Individuo)this.users.get(nif);
@@ -217,9 +216,9 @@ public class Faturacao implements Serializable {
                                                       .map(c->c.clone())
                                                       .collect(Collectors.toCollection(ArrayList::new));
         double aux;
-        Map<int,double> map = new HashMap<int,double>();
+        Map<Integer,Double> map = new HashMap<Integer,Double>();
         for(Fatura f:list){
-            int x = f.getListaAtividades().get(0)
+            int x = f.getListaAtividades().get(0);
             if(!map.containsKey(x)){
                 map.put(x,deducaoFatura(f));
             } else {
