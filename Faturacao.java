@@ -28,7 +28,7 @@ public class Faturacao implements Serializable {
         this.users = new HashMap<Integer, Contribuinte>();
         this.faturas = new HashMap<Long, Fatura>();
         this.hist = new Historico();
-        this.atividades = new HashMap<Integer, Atividade>();        
+        this.atividades = new HashMap<Integer, Atividade>();
         this.logedIn = null;
     }
     public Faturacao(Map<Integer,Contribuinte> users, Map<Long,Fatura> faturas, Historico hist,
@@ -65,7 +65,7 @@ public class Faturacao implements Serializable {
                                 .toMap(e->e.getKey(),
                                     e->e.getValue().stream().map(c->c.clone()).collect(Collectors.toCollection(ArrayList::new))));
     }*/
-    
+
     public Map<Integer, Atividade> getAtividades(){
         return this.atividades.values().stream().map(c->c.clone()).collect(Collectors.toMap(c->c.getId(),c->c));
     }
@@ -73,7 +73,7 @@ public class Faturacao implements Serializable {
         return this.logedIn.clone();
     }
     public String getNomeAtividade(int i) throws SemAutorizacaoException {
-        if(!this.atividades.containsKey(i)) throw new SemAutorizacaoException("Atividade Inexistente");  
+        if(!this.atividades.containsKey(i)) throw new SemAutorizacaoException("Atividade Inexistente");
         return this.atividades.get(i).getNome();
     }
 
@@ -88,7 +88,7 @@ public class Faturacao implements Serializable {
         this.logedIn = logedIn;
     }
     //ToString
-    
+
     public String toString(){
         StringBuilder st= new StringBuilder();
         st.append("Users:").append(this.users).append("\n");
@@ -96,9 +96,9 @@ public class Faturacao implements Serializable {
         st.append("Registo de Faturas:").append(this.hist).append("\n");
         st.append("Atividades:").append(this.atividades).append("\n");
         return st.toString();
-        
+
     }
-    
+
     //
     /**
      * Gravar o estado da aplicação num determinado ficheiro.
@@ -133,9 +133,9 @@ public class Faturacao implements Serializable {
         fw.flush();
         fw.close();
     }
-    
+
     /**====================Metodos========================*/
-    
+
     /**
      * Regista Contribuinte na aplicação
      */
@@ -146,7 +146,7 @@ public class Faturacao implements Serializable {
     }
 
     /**
-     * Inicia sessao com nif e password. 
+     * Inicia sessao com nif e password.
      */
     public void iniciaSessao(int nif,String password) throws SemAutorizacaoException {
         if(this.logedIn == null){
@@ -183,7 +183,7 @@ public class Faturacao implements Serializable {
         for (long value : lista) {
             if (value > max) {
                 max = value;
-            }  
+            }
         }
         return max;
     }
@@ -202,8 +202,10 @@ public class Faturacao implements Serializable {
     /**
      * Devolve o montante de deduçao fiscal do agregado familiar do individuo.
      * ==============================POR FAZER=============================== --TODO
+     * Map<IdAtividade,total de deduçao daquele tipo de atividade> isto porque as atividades tem limite de deduçao
+     * Falta talvez por uma variavel na atividade com o maximo dedutivel(sim isto existe)
      */
-    public long deducaoFiscalFamilia () throws SemAutorizacaoException{
+    public Map<Integer,double> deducaoFiscalFamilia () throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         int nif = this.logedIn.getNif();
         Individuo u = (Individuo)this.users.get(nif);
@@ -214,16 +216,28 @@ public class Faturacao implements Serializable {
                                                       .filter(f->f.dedutivel())
                                                       .map(c->c.clone())
                                                       .collect(Collectors.toCollection(ArrayList::new));
-        
-        return 1;
+        double aux;
+        Map<int,double> map = new HashMap<int,double>();
+        for(Fatura f:list){
+            int x = f.getListaAtividades().get(0)
+            if(!map.containsKey(x)){
+                map.put(x,deducaoFatura(f));
+            } else {
+                aux = map.get(x);
+                aux += deducaoFatura(f);
+                map.replace(x,aux);
+            }
+        }
+
+        return map;
     }
     public double deducaoFatura(Fatura f){
         if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0))) return 0;
         Atividade a = this.atividades.get(f.getListaAtividades().get(0));
-        
-        return 0;
+
+        return a.getDeducao()*f.getValorPagar();
     }
-        
+
     /**
      * Associa uma classificaço de atividade economica a uma fatura
      * 1º preguntar qual e a fatura a editar
@@ -238,14 +252,14 @@ public class Faturacao implements Serializable {
     }
     public void corrigeClassificaFatura(long idFatura, int atividade) throws SemAutorizacaoException{
         Fatura f = this.faturas.get(idFatura);
-        if(((Coletivo)this.users.get(f.getNifEmi())).getAtividades().contains(atividade) && 
+        if(((Coletivo)this.users.get(f.getNifEmi())).getAtividades().contains(atividade) &&
                 this.atividades.containsKey(atividade)){
             this.hist.add(f);
             ArrayList<Integer> aux = new ArrayList<Integer>();
             aux.add(atividade);
             f.setListaAtividades(aux);
             this.faturas.replace(idFatura,f);
-        }else throw new SemAutorizacaoException("Atividade Proibida!");                 
+        }else throw new SemAutorizacaoException("Atividade Proibida!");
     }
     /**
      * Devolve a lista das facturas correspondentes a uma determinada empresa por data de emissao.
@@ -272,7 +286,7 @@ public class Faturacao implements Serializable {
         return lista;
     }
     /**
-     * Devolve a lista de facturas por contribuintes num determinado intervalo de tempo 
+     * Devolve a lista de facturas por contribuintes num determinado intervalo de tempo
      * (feito de forma a puder ser imprimido simplesmente atraves de um ciclo).
      */
     public ArrayList<Fatura> facturasContribuinteData(LocalDate in, LocalDate fin) throws SemAutorizacaoException{

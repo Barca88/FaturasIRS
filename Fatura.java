@@ -14,7 +14,6 @@ public class Fatura implements Serializable{
     private LocalDate datafatura;
     private String descricao;
     private double valorFact;
-    private double valorAPagar;
     private ArrayList<Integer> listaAtividades;
     private static double taxaImposto; // Acho que não precisamos disto porque esta dentro da atividade
 
@@ -29,7 +28,6 @@ public class Fatura implements Serializable{
         this.datafatura = now();
         this.descricao = descricao;
         this.valorFact = valorFact;
-        this.valorAPagar = this.valorFact * (1+this.getTaxaImposto());
         this.listaAtividades = (ArrayList<Integer>) li.clone();
         this.taxaImposto = tx;
     }
@@ -41,7 +39,6 @@ public class Fatura implements Serializable{
         this.datafatura = f.getData();
         this.descricao = f.getDescricao();
         this.valorFact = f.getValorFact();
-        this.valorAPagar = f.getValorPagar();
         this.taxaImposto = f.getTaxaImposto();
         this.listaAtividades = f.getListaAtividades();
     }
@@ -73,7 +70,7 @@ public class Fatura implements Serializable{
         return valorFact;
     }
     public double getValorPagar(){
-        return valorAPagar;
+        return this.valorFact+(1+(100/this.taxaImposto));
     }
     public ArrayList<Integer> getListaAtividades() {
         ArrayList<Integer> lista = new ArrayList<Integer>();
@@ -103,9 +100,6 @@ public class Fatura implements Serializable{
     public void setValorFatura(double valorFact){
         valorFact = valorFact;
     }
-    public void setValorAPagar(double valorAPagar){
-        valorAPagar= valorAPagar;
-    }
     public void setListaAtividades(ArrayList<Integer> listaAtividades) {
         ArrayList<Integer> lista = new ArrayList<Integer>();
         listaAtividades.forEach(e->lista.add(e));
@@ -134,7 +128,6 @@ public class Fatura implements Serializable{
                o.getNome() == this.getNome() &&
                o.getData() == this.getData() &&
                o.getValorFact() == this.getValorFact() &&
-               o.getValorPagar() == this.getValorPagar() &&
                o.getTaxaImposto() == this.getTaxaImposto();
 
     }
@@ -146,7 +139,6 @@ public class Fatura implements Serializable{
         st.append("Data Fatura: ").append(this.datafatura).append("\n");
         st.append("Discriçao: ").append(this.descricao).append("\n");
         st.append("Valor Factura: ").append(this.valorFact).append("\n");
-        st.append("Valor a Pagar: ").append(this.valorAPagar).append("\n");
         st.append("Taxa de Imposto: ").append(this.taxaImposto).append("\n");
         return st.toString();
     }
