@@ -218,6 +218,9 @@ public class Faturacao implements Serializable {
         return 1;
     }
     public double deducaoFatura(Fatura f){
+        if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0))) return 0;
+        Atividade a = this.atividades.get(f.getListaAtividades().get(0));
+        
         return 0;
     }
         
