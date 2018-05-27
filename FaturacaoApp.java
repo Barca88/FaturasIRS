@@ -48,6 +48,7 @@ public class FaturacaoApp{
                                
         String [] contribuinte = {"Despesas emitidas em meu nome",
                                   "Deduçao acumulada pelo meu agregado familiar",
+                                  "Facturas por classificar",
                                   "Corrigir classificaçao de atividade economica de uma fatura",
                                   "Lista das minhas faturas numa determinada empresa"
                                   };
@@ -94,9 +95,11 @@ public class FaturacaoApp{
                             break;
                     case 2: deducaoFamiliar();
                             break;
-                    case 3: classFat();
+                    case 3: naoClassificadas();
                             break;
-                    case 4: faturasEmpresa();
+                    case 4: classFat();
+                            break;
+                    case 5: faturasEmpresa();
                             break;
                     }
         } while (menucontribuinte.getOpcao()!= 0);
@@ -223,7 +226,32 @@ public class FaturacaoApp{
     private static void deducaoFamiliar(){
     }
     
+    private static void naoClassificadas(){
+        try{
+            List<Fatura> lista = fat.porClassificar(fat.getLogedIn().getNif());
+            imprimeFaturas((ArrayList)lista);
+        }
+        catch(SemAutorizacaoException e){
+           System.out.println(e.getMessage());
+        }
+    }
+    
     private static void classFat(){
+        long id;
+        int atividade;
+        
+        id = lerLong("Identificador da factura:");
+        ArrayList<Atividade> atividades = fat.getActPossiveis(id);
+        imprimeAtividades(atividades);
+        
+        atividade = lerInt("Indentificador do tipo de atividade economica pretendido:");
+        
+        try{
+            fat.corrigeClassificaFatura(id,atividade);
+        }
+        catch(SemAutorizacaoException e){
+           System.out.println(e.getMessage());
+        }
     }
     
     private static void faturasEmpresa(){
@@ -242,7 +270,7 @@ public class FaturacaoApp{
         
         System.out.println("Insira o nome da empresa da qual pretende obter as faturas: ");
         nomeEmpresa = input.nextLine();
-        switch(menuregistar.getOpcao()){
+        switch(menufaturasempresa.getOpcao()){
             case 0: input.close(); return;
             case 1: lista = fat.facturasEmpresaData(nomeEmpresa); break;
             case 2: lista = fat.facturasEmpresaValor(nomeEmpresa); break;
@@ -415,6 +443,13 @@ public class FaturacaoApp{
             }
         }
         
+        private static void imprimeAtividades(ArrayList<Atividade> lista){
+            for(Atividade a : lista){
+                System.out.println("Id : " + a.getId() + "\n" +
+                                   "Nome : " + a.getNome());
+            }
+        }
+        
         private static double lerDouble(String msg){
             Scanner input = new Scanner(System.in);
             double r = 0;
@@ -444,6 +479,24 @@ public class FaturacaoApp{
             catch (InputMismatchException e){
                 System.out.println("Formato errado!");
                 r = lerInt(msg);
+            }
+            finally{
+                input.close();
+            }
+            return r;
+        }
+        
+        private static long lerLong(String msg){
+            Scanner input = new Scanner(System.in);
+            long r = 0;
+
+            System.out.println(msg);
+            try{
+                r = input.nextLong();
+            }
+            catch (InputMismatchException e){
+                System.out.println("Formato errado!");
+                r = lerLong(msg);
             }
             finally{
                 input.close();

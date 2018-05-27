@@ -236,7 +236,7 @@ public class Faturacao implements Serializable {
         return map;
     }
     public double deducaoFatura(Fatura f){
-        if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0)) && f.dedutivel()) return 0;
+        if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0)) && !(f.dedutivel())) return 0;
         Atividade a = this.getAtividades().get(f.getListaAtividades().get(0));
 
         return a.getDeducao()*f.getValorPagar();
@@ -250,18 +250,23 @@ public class Faturacao implements Serializable {
      * 3º corrijir a classificaçao com o id da fatura e o id da atividade
      *  --TODO
      */
-    public List<Long> porClassificar(int nif){
+    public List<Fatura> porClassificar(int nif) throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         return this.getFaturas().values().stream()
                                          .filter(f->f.getNifCli() == nif)
                                          .filter(f->f.getListaAtividades().size() != 1)
-                                         .map(f->f.getId())
+                                         .map(c->c.clone())
                                          .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public List<Integer> getActPossiveis(long idFatura){
+    public ArrayList<Atividade> getActPossiveis(long idFatura){
         Fatura f = this.getFaturas().get(idFatura);
         Coletivo c = (Coletivo)this.getUsers().get(f.getNifEmi());
-        return c.getAtividades();
+        ArrayList<Atividade> lista = new ArrayList<Atividade>();
+        for(Integer a : c.getAtividades()){
+            lista.add(this.getAtividades().get(a));
+        }
+        return lista;
     }
     public void corrigeClassificaFatura(long idFatura, int atividade) throws SemAutorizacaoException{
         Fatura f = this.getFaturas().get(idFatura);
