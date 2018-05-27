@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static java.time.LocalDate.now;
-
+import java.util.List;
 public class Fatura implements Serializable{
     private long id;
     private int nif_emitente;
@@ -20,7 +20,7 @@ public class Fatura implements Serializable{
 
     // CLASS IMCOMPLETA
     public Fatura(long id, int nifEmi, int nifCli, String nomeEmpresa, String descricao,
-            double valorFact, ArrayList<Integer> li, double tx){
+            double valorFact, List<Integer> li, double tx){
         this.id = id;
         this.nif_emitente = nifEmi;
         this.nif_cliente = nifCli;
@@ -28,7 +28,7 @@ public class Fatura implements Serializable{
         this.datafatura = now();
         this.descricao = descricao;
         this.valorFact = valorFact;
-        this.listaAtividades = (ArrayList<Integer>) li.clone();
+        this.listaAtividades = (ArrayList<Integer>)li;
         this.taxaImposto = tx;
     }
     public Fatura(Fatura f){

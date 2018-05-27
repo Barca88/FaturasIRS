@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.lang.Object;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.List;
 
 public class Faturacao implements Serializable {
     private Map<Integer,Contribuinte> users;
@@ -67,25 +68,25 @@ public class Faturacao implements Serializable {
     }*/
 
     public Map<Integer, Atividade> getAtividades(){
-        return this.atividades.values().stream().map(c->c.clone()).collect(Collectors.toMap(c->c.getId(),c->c));
+        return this.getAtividades().values().stream().map(c->c.clone()).collect(Collectors.toMap(c->c.getId(),c->c));
     }
     public Contribuinte getLogedIn() {
         return this.logedIn.clone();
     }
     public String getNomeAtividade(int i) throws SemAutorizacaoException {
-        if(!this.atividades.containsKey(i)) throw new SemAutorizacaoException("Atividade Inexistente");
-        return this.atividades.get(i).getNome();
+        if(!this.getAtividades().containsKey(i)) throw new SemAutorizacaoException("Atividade Inexistente");
+        return this.getAtividades().get(i).getNome();
     }
 
     //Setters
-    public void setUsers(HashMap<Long, Contribuinte> users) {
-        this.users.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
+    public void setUsers(HashMap<Integer, Contribuinte> u) {
+        this.users = u.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
-    public void setFaturas(HashMap<Long, Fatura> faturas) {
-        this.faturas.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue()));
+    public void setFaturas(HashMap<Long, Fatura> fat) {
+        this.faturas = fat.entrySet().stream().collect(Collectors.toMap(c->c.getKey(),c->c.getValue().clone()));
     }
-    public void setLogedIn(Contribuinte logedIn) {
-        this.logedIn = logedIn;
+    public void setLogedIn(Contribuinte c) {
+        this.logedIn = c.clone();
     }
     //ToString
     public String toString(){
@@ -139,9 +140,9 @@ public class Faturacao implements Serializable {
      * Regista Contribuinte na aplicação
      */
     public void registarContribuinte(Contribuinte c) throws ContribuinteExistenteException{
-        if(this.users.containsKey(c.getNif())){
+        if(this.getUsers().containsKey(c.getNif())){
             throw new ContribuinteExistenteException ("Já existe este Contribuinte");
-        }else ((Map)this.users).put(c.getNif(),c);
+        }else ((Map)this.users).put(c.getNif(),c.clone());
     }
 
     /**
@@ -150,7 +151,7 @@ public class Faturacao implements Serializable {
     public void iniciaSessao(int nif,String password) throws SemAutorizacaoException {
         if(this.logedIn == null){
             if(users.containsKey(nif)){
-                Contribuinte user = users.get(nif);
+                Contribuinte user = this.getUsers().get(nif);
                 if (password.equals(user.getPwd())){
                     logedIn = user;
                 }else throw new SemAutorizacaoException("Credenciais Erradas");
@@ -166,15 +167,16 @@ public class Faturacao implements Serializable {
     /**
      * Cria uma factura.
      */
-    public void novaFactura(int nif_cliente, String descricao, double valorFact, ArrayList<Integer> atividades, double taxaImposto)
+    public void novaFactura(int nif_cliente, String descricao, double valorFact, double taxaImposto)
     throws SemAutorizacaoException{
         long idFatura;
         if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         if(this.faturas.equals(null)){ idFatura = 1;}
         else{
             idFatura = maxFatura(this.faturas.keySet()) + 1;
-            Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,this.logedIn.getNome(),descricao,valorFact,atividades,taxaImposto);
-            this.faturas.put(idFatura,f);
+            Coletivo c = (Coletivo) this.getLogedIn();
+            Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,c.getNome(),descricao,valorFact,c.getAtividades(),taxaImposto);
+            this.faturas.put(idFatura,f.clone());
         }
     }
     private static long maxFatura(Set<Long> lista){
@@ -192,8 +194,8 @@ public class Faturacao implements Serializable {
     public ArrayList<Fatura> despesasEmitidas() throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         ArrayList<Fatura> despesas = new ArrayList<Fatura>();
-        for (Fatura f : this.faturas.values()){
-            if (this.logedIn.getNif() == f.getNifCli())
+        for (Fatura f : this.getFaturas().values()){
+            if (this.getLogedIn().getNif() == f.getNifCli())
                 despesas.add(f.clone());
         }
         return despesas;
@@ -206,11 +208,11 @@ public class Faturacao implements Serializable {
      */
     public Map<Integer,Double> deducaoFiscalFamilia () throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Individuo))throw new SemAutorizacaoException("Utilizador nao autorizado");
-        int nif = this.logedIn.getNif();
-        Individuo u = (Individuo)this.users.get(nif);
+        int nif = this.getLogedIn().getNif();
+        Individuo u = (Individuo)this.getUsers().get(nif);
         List<Integer> lista = u.getlContAgre();
         lista.add(logedIn.getNif());
-        ArrayList<Fatura> list = this.faturas.values().stream()
+        ArrayList<Fatura> list = this.getFaturas().values().stream()
                                                       .filter(f->lista.contains(f.getNifCli()))
                                                       .filter(f->f.dedutivel())
                                                       .map(c->c.clone())
@@ -232,11 +234,12 @@ public class Faturacao implements Serializable {
     }
     public double deducaoFatura(Fatura f){
         if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0))) return 0;
-        Atividade a = this.atividades.get(f.getListaAtividades().get(0));
+        Atividade a = this.getAtividades().get(f.getListaAtividades().get(0));
 
         return a.getDeducao()*f.getValorPagar();
     }
-
+    
+    //public 
     /**
      * Associa uma classificaço de atividade economica a uma fatura
      * 1º preguntar qual e a fatura a editar
@@ -245,14 +248,14 @@ public class Faturacao implements Serializable {
      *  --TODO
      */
     public List<Integer> getActPossiveis(long idFatura){
-        Fatura f = this.faturas.get(idFatura);
-        Coletivo c = (Coletivo)this.users.get(f.getNifEmi());
+        Fatura f = this.getFaturas().get(idFatura);
+        Coletivo c = (Coletivo)this.getUsers().get(f.getNifEmi());
         return c.getAtividades();
     }
     public void corrigeClassificaFatura(long idFatura, int atividade) throws SemAutorizacaoException{
-        Fatura f = this.faturas.get(idFatura);
-        if(((Coletivo)this.users.get(f.getNifEmi())).getAtividades().contains(atividade) &&
-                this.atividades.containsKey(atividade)){
+        Fatura f = this.getFaturas().get(idFatura);
+        if(((Coletivo)this.getUsers().get(f.getNifEmi())).getAtividades().contains(atividade) &&
+                this.getAtividades().containsKey(atividade)){
             this.hist.add(f);
             ArrayList<Integer> aux = new ArrayList<Integer>();
             aux.add(atividade);
@@ -265,7 +268,7 @@ public class Faturacao implements Serializable {
      */
     public ArrayList<Fatura> facturasEmpresaData(String nomeEmpresa){
         ArrayList<Fatura> lista = new ArrayList<Fatura>();
-        for (Fatura f : this.faturas.values()){
+        for (Fatura f : this.getFaturas().values()){
             if (f.getNome().equals(nomeEmpresa))
                 lista.add(f.clone());
         }
@@ -277,7 +280,7 @@ public class Faturacao implements Serializable {
      */
     public ArrayList<Fatura> facturasEmpresaValor(String nomeEmpresa){
         ArrayList<Fatura> lista = new ArrayList<Fatura>();
-        for (Fatura f : this.faturas.values()){
+        for (Fatura f : this.getFaturas().values()){
             if (f.getNome().equals(nomeEmpresa))
                 lista.add(f.clone());
         }
@@ -291,9 +294,9 @@ public class Faturacao implements Serializable {
     public ArrayList<Fatura> facturasContribuinteData(LocalDate in, LocalDate fin) throws SemAutorizacaoException{
         if(!(this.logedIn instanceof Coletivo))throw new SemAutorizacaoException("Utilizador nao autorizado");
         ArrayList<Fatura> lista = new ArrayList<Fatura>();
-        for (Fatura f : this.faturas.values()){
+        for (Fatura f : this.getFaturas().values()){
             if(f.getData().isAfter(in) && f.getData().isBefore(fin)){
-                if(f.getNome().equals(this.logedIn.getNome())) lista.add(f.clone());
+                if(f.getNome().equals(this.getLogedIn().getNome())) lista.add(f.clone());
             }
         }
         Collections.sort(lista, new ComparadorNifContribuinteFact());
@@ -306,8 +309,8 @@ public class Faturacao implements Serializable {
         if(this.logedIn instanceof Coletivo){
             ArrayList<Fatura> lista =  new ArrayList<Fatura>();
             Map<Integer,ArrayList<Fatura>> map = new HashMap<Integer, ArrayList<Fatura>>();
-            for (Fatura f : this.faturas.values()){
-                if(f.getNome().equals(this.logedIn.getNome())){
+            for (Fatura f : this.getFaturas().values()){
+                if(f.getNome().equals(this.getLogedIn().getNome())){
                     if(map.containsKey(f.getNifCli())){
                         lista = map.get(f.getNifCli());
                         lista.add(f.clone());
@@ -319,16 +322,33 @@ public class Faturacao implements Serializable {
         }
         else throw new SemAutorizacaoException("Utilizador nao autorizado");
     }
+    
+    public double totalFaturadoColetivo(int nif, LocalDate in, LocalDate fim) throws SemAutorizacaoException{
+        double cont = 0;
+        List<Long> fat = new ArrayList<Long>();
+        Coletivo co = null;
+        if(users.get(nif) instanceof Coletivo){
+            co = (Coletivo) this.getUsers().get(nif);
+            fat = co.getFaturas();
+            for(Long id : fat){
+                if(this.getFaturas().get(id).getData().isAfter(in) && this.getFaturas().get(id).getData().isBefore(fim))
+                    cont += this.getFaturas().get(id).getValorPagar();
+            }
+            return cont;
+        }
+        else throw new SemAutorizacaoException("O nif pretendido nao corresponde a nenhuma empresa");
+    }
+    
     /**
     * Devolve um int correspondente ao tipo de utilizador do "logedIn".
     */
     public int getTipoUtilizador(){
-    if (this.logedIn instanceof Individuo)
-        return 1;
-    if (this.logedIn instanceof Coletivo)
-        return 2;
-    if (this.logedIn instanceof Admin)
-        return 3;
+        if (this.logedIn instanceof Individuo)
+            return 1;
+        if (this.logedIn instanceof Coletivo)
+            return 2;
+        if (this.logedIn instanceof Admin)
+            return 3;
     return 0;
     }
 }
