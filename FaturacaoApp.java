@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.*;
 import java.time.LocalDate;
 import java.io.FileWriter;
+import java.util.stream.Collectors;
+import java.util.Collections;
 
 public class FaturacaoApp{
     private static Faturacao fat;
@@ -166,6 +168,7 @@ public class FaturacaoApp{
     private static void regiUti(){
         int nif;
         String email, nome, morada, password;
+        ArrayList<Integer> descontos = new ArrayList<Integer>();
         Scanner input = new Scanner(System.in);
         Contribuinte c = null;
         menuregistar.executa();
@@ -189,6 +192,10 @@ public class FaturacaoApp{
         System.out.println("Insira a sua password: ");
         password = input.nextLine();
         
+        System.out.println("Insira a lista de atividades deduziveis por si/que o seu coletivo pode deduzir (terminando em 0): ");
+        scannDescontos(descontos);
+        
+        
         switch(menuregistar.getOpcao()){
             case 0: input.close(); return;
             case 1: c = new Individuo(nif); break;
@@ -200,6 +207,7 @@ public class FaturacaoApp{
         c.setNome(nome);
         c.setMorada(morada);
         c.setPwd(password);
+        c.setDescontos(descontos);
         
         try{
             fat.registarContribuinte(c);
@@ -211,6 +219,15 @@ public class FaturacaoApp{
             input.close();
         }
     }
+    
+        private static void scannDescontos(ArrayList<Integer> descontos){
+            Scanner input = new Scanner(System.in);
+            int a = -1;
+            while(a != 0){
+                a = lerInt(null);
+                descontos.add(a);
+            }
+        }
     
     private static void minhasDespesas(){
         try{
@@ -224,6 +241,24 @@ public class FaturacaoApp{
     }
     
     private static void deducaoFamiliar(){
+        Map<Integer,Double> mapa = new HashMap<Integer,Double>();
+        ArrayList<Atividade> atividades = fat.getAtividades().values().stream().collect(Collectors.toCollection(ArrayList::new));
+        double deducao = 0;
+        
+        try{
+            mapa = fat.deducaoFiscalFamilia();
+            for(Atividade a : atividades){
+                if(mapa.containsKey(a.getId())){
+                    deducao += mapa.get(a.getId());
+                    System.out.println("Classificaçao de Atividade economica: " + a.getNome() 
+                                     + "\nDeduçao correspondente a mesma no agregado familiar: " + mapa.get(a.getId()));
+                }
+            }
+            System.out.println("Deduçao total do agregado familiar: " + deducao);
+        }
+        catch(SemAutorizacaoException e){
+           System.out.println(e.getMessage());
+        }
     }
     
     private static void naoClassificadas(){

@@ -175,9 +175,9 @@ public class Faturacao implements Serializable {
         if(this.faturas.equals(null)){ idFatura = 1;}
         else{
             idFatura = maxFatura(this.faturas.keySet()) + 1;
-            Coletivo c = (Coletivo) this.getLogedIn();
+            Contribuinte c = this.getLogedIn();
             Contribuinte co = users.get(nif_cliente);
-            Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,c.getNome(),descricao,valorFact,c.getAtividades(),taxaImposto);
+            Fatura f = new Fatura(idFatura,this.logedIn.getNif(),nif_cliente,c.getNome(),descricao,valorFact,c.getDescontos(),taxaImposto);
             this.faturas.put(idFatura,f.clone());
             co.setGastos(co.getGastos() + f.getValorPagar());
         }
@@ -236,7 +236,7 @@ public class Faturacao implements Serializable {
         return map;
     }
     public double deducaoFatura(Fatura f){
-        if(!((Individuo)this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0)) && !(f.dedutivel())) return 0;
+        if(!(this.users.get(f.getNifCli())).getDescontos().contains(f.getListaAtividades().get(0)) && !(f.dedutivel())) return 0;
         Atividade a = this.getAtividades().get(f.getListaAtividades().get(0));
 
         return a.getDeducao()*f.getValorPagar();
@@ -261,16 +261,16 @@ public class Faturacao implements Serializable {
 
     public ArrayList<Atividade> getActPossiveis(long idFatura){
         Fatura f = this.getFaturas().get(idFatura);
-        Coletivo c = (Coletivo)this.getUsers().get(f.getNifEmi());
+        Contribuinte c = this.getUsers().get(f.getNifEmi());
         ArrayList<Atividade> lista = new ArrayList<Atividade>();
-        for(Integer a : c.getAtividades()){
+        for(Integer a : c.getDescontos()){
             lista.add(this.getAtividades().get(a));
         }
         return lista;
     }
     public void corrigeClassificaFatura(long idFatura, int atividade) throws SemAutorizacaoException{
         Fatura f = this.getFaturas().get(idFatura);
-        if(((Coletivo)this.getUsers().get(f.getNifEmi())).getAtividades().contains(atividade) &&
+        if((this.getUsers().get(f.getNifEmi())).getDescontos().contains(atividade) &&
                 this.getAtividades().containsKey(atividade)){
             this.hist.add(f);
             ArrayList<Integer> aux = new ArrayList<Integer>();

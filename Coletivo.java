@@ -6,34 +6,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Coletivo extends Contribuinte implements Serializable{
-    private List<Integer> atividades;
     private double deducao;
     private List<Long> faturas;//ids de faturas passadas por este objeto
 
     public Coletivo (int nif){
-        super(nif,"","","","",0);
-        this.atividades = new ArrayList<Integer>();
+        super(nif,"","","","",0,null);
         this.deducao = 0;
         this.faturas = new ArrayList<Long>();
     }
-    public Coletivo (int nif, String email, String nome, String morada, String pwd){
-        super(nif, email, nome, morada, pwd, 0);
-        this.atividades = new ArrayList<Integer>();
+    public Coletivo (int nif, String email, String nome, String morada, String pwd, double gastos, ArrayList<Integer> descontos){
+        super(nif, email, nome, morada, pwd, gastos,  descontos);
         this.deducao = 0;
         this.faturas = new ArrayList<Long>();
     }
     public Coletivo ( Coletivo c){
         super(c);
-        this.atividades = c.getAtividades();
         this.deducao = c.getDeducao();
         this.faturas = c.getFaturas();
     }
 
     //Getters
-    public List<Integer> getAtividades() {
-        return this.atividades.stream()
-            .collect(Collectors.toCollection(ArrayList::new));
-    }
     public double getDeducao() {
         return deducao;
     }
@@ -43,10 +35,6 @@ public class Coletivo extends Contribuinte implements Serializable{
     }
 
     //Setters
-    public void setAtividades(List<Integer> atividades) {
-        this.atividades = atividades.stream()
-            .collect(Collectors.toCollection(ArrayList::new));
-    }
     public void setDeducao(double deducao) {
         this.deducao = deducao;
     }
@@ -66,14 +54,12 @@ public class Coletivo extends Contribuinte implements Serializable{
         if(obj == null || this.getClass() != obj.getClass())
             return false;
         Coletivo c = (Coletivo) obj;
-        return  super.equals(c) && 
-                c.getAtividades().equals(this.getAtividades()) &&
+        return  super.equals(c) &&
                 c.getDeducao() == this.getDeducao() &&
                 c.getFaturas().equals(this.getFaturas());
     }
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Atividades: ").append(atividades).append("\n");
         sb.append("Deduçao: ").append(deducao).append("\n");
         sb.append("Faturas: ").append(faturas).append("\n");
         return sb.toString();
