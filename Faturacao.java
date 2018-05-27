@@ -136,7 +136,17 @@ public class Faturacao implements Serializable {
     }
 
     /**====================Metodos========================*/
-
+    
+    /**
+     * Cirar atividades
+     */
+    public void criaAtividade(String nome, double deducao, int max){
+        if(this.getLogedIn() instanceof Admin){
+            this.getAtividades().size();
+            Atividade a = new Atividade(this.getAtividades().size()+1,nome,deducao,max);
+            this.atividades.put(a.getId(),a.clone());
+        }
+    }
     /**
      * Regista Contribuinte na aplicação
      */
