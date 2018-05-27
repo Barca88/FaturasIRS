@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 /**
@@ -5,8 +6,7 @@ import java.util.HashMap;
  *
  * @author Grupo 51
  */
-public class Historico
-{
+public class Historico implements Serializable {
     // var. instancia
     private HashMap<Long,ArrayList<Fatura>> hist;
 

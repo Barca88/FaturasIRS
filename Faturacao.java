@@ -324,9 +324,11 @@ public class Faturacao implements Serializable {
     */
     public int getTipoUtilizador(){
     if (this.logedIn instanceof Individuo)
-      return 1;
+        return 1;
     if (this.logedIn instanceof Coletivo)
-      return 2;
+        return 2;
+    if (this.logedIn instanceof Admin)
+        return 3;
     return 0;
     }
 }

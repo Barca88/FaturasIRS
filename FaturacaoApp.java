@@ -16,7 +16,7 @@ public class FaturacaoApp
         imprimeMenuPrincipal();
         try{
             fat.gravaObj();
-            fat.log("log.txt",true);
+            //fat.log("log.txt",true);
         }
         catch(IOException e){
             System.out.println("Não foi possivel gravar os dados");
@@ -62,7 +62,8 @@ public class FaturacaoApp
                              };
         
         String [] registar = {"Registar Contribuinte",
-                              "Registar Empresa"
+                              "Registar Empresa",
+                              "Registar Admin"
                               };
         
         menuprincipal = new Menu(principal);
@@ -144,6 +145,7 @@ public class FaturacaoApp
         switch(fat.getTipoUtilizador()){
             case 1: imprimeMenuContribuinte(); break;
             case 2: imprimeMenuEmpresa(); break;
+            //case 3: imprimeMenuAdmin(); break;
         }
     }
     
@@ -177,6 +179,7 @@ public class FaturacaoApp
             case 0: input.close(); return;
             case 1: c = new Individuo(nif); break;
             case 2: c = new Coletivo(nif); break;
+            case 3: c = new Admin(nif); break;
         }
         
         c.setEmail(email);

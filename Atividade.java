@@ -1,4 +1,4 @@
-
+import java.io.Serializable;
 
 
 /**
@@ -7,8 +7,7 @@
  * @author (your name)
  * @version (a version number or a date)
  */
-public class Atividade
-{
+public class Atividade implements Serializable{
     // instance variables - replace the example below with your own
     private int id;
     private String nome;
