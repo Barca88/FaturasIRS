@@ -140,12 +140,14 @@ public class Faturacao implements Serializable {
     /**
      * Cirar atividades
      */
-    public void criaAtividade(String nome, double deducao, int max){
-        if(this.getLogedIn() instanceof Admin){
-            this.getAtividades().size();
-            Atividade a = new Atividade(this.getAtividades().size()+1,nome,deducao,max);
-            this.atividades.put(a.getId(),a.clone());
+    public void criaAtividade(String nome, double deducao, int max) throws SemAutorizacaoException{
+        if(!(this.logedIn instanceof Admin))throw new SemAutorizacaoException("Utilizador nao autorizado");
+        int size = 0;
+        for(Map.Entry<Integer,Atividade> e : this.atividades.entrySet()){
+            size ++;
         }
+        Atividade a = new Atividade(size,nome,deducao,max);
+        this.atividades.put(a.getId(),a.clone());
     }
     /**
      * Regista Contribuinte na aplicação

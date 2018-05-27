@@ -67,7 +67,8 @@ public class FaturacaoApp{
                               
         String [] admin = {"10 contribuintes que mais gastam",
                            "X empresas que mais facturas passaram e o montante de deduçoes fiscais correspondente a cada",
-                           "Total facturado por uma dada empresa num determinado periodo"
+                           "Total facturado por uma dada empresa num determinado periodo",
+                           "Adicionar tipo de Atividade economica"
                           };
         
         menuprincipal = new Menu(principal);
@@ -132,6 +133,8 @@ public class FaturacaoApp{
                 case 2: topXEmpresas();
                         break;
                 case 3: faturadoEmpresa();
+                        break;
+                case 4: adicionaAtividade();
                         break;
             }
         } while (menuadmin.getOpcao()!= 0);
@@ -447,6 +450,27 @@ public class FaturacaoApp{
                                            + "\nNome: " + c.getNome() 
                                            + "\nDeduçao total da Empresa: " + fat.deducaoEmpresa(c.getNif()));
             }
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private static void adicionaAtividade(){
+        String nome;
+        Double deducao;
+        int max;
+        Scanner input = new Scanner(System.in);
+        
+        System.out.println("Insira o nome do tipo de atividade economica: ");
+        nome = input.nextLine();
+        
+        deducao = lerDouble("Insira o factor de deducao da atividade economica em questao: ");
+        
+        max = lerInt("Insira o maximo de deducao possivel de se obter atraves da atividade economica em questao: ");
+        
+        try{
+            fat.criaAtividade(nome, deducao, max);
         }
         catch(SemAutorizacaoException e){
             System.out.println(e.getMessage());
