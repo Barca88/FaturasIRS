@@ -2,8 +2,8 @@
 comment0.target=Admin
 comment1.params=nif
 comment1.target=Admin(int)
-comment2.params=nif\ email\ nome\ morada\ pwd\ gastos
-comment2.target=Admin(int,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double)
+comment2.params=nif\ email\ nome\ morada\ pwd\ gastos\ descontos
+comment2.target=Admin(int,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ java.util.ArrayList)
 comment3.params=a
 comment3.target=Admin(Admin)
 comment4.params=

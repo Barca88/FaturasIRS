@@ -1,5 +1,8 @@
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Contribuinte implements Serializable{
     // variaveis de instancia
@@ -9,6 +12,7 @@ public class Contribuinte implements Serializable{
     private String morada;
     private String pwd;
     private double totalGasto;
+    private ArrayList<Integer> descontos; //códigos das atividades economicas que este individuo tem possibilidade de deduzir
 
     //Construtores
     public Contribuinte(){ // help no criar nif nao pode ser 0 vou ter mais do que 1 iguais
@@ -18,14 +22,16 @@ public class Contribuinte implements Serializable{
         this.morada = "null";
         this.pwd = "null";
         this.totalGasto = 0;
+        this.descontos = null;
     }
-    public Contribuinte(int nif,String email,String nome,String morada,String pwd,double gastos){
+    public Contribuinte(int nif,String email,String nome,String morada,String pwd,double gastos, ArrayList<Integer> descontos){
         this.nif = nif;
         this.email = email;
         this.nome = nome;
         this.morada = morada;
         this.pwd = pwd;
         this.totalGasto = gastos;
+        this.descontos = descontos;
     }
     public Contribuinte(Contribuinte c){
         this.nif = c.getNif();
@@ -34,6 +40,7 @@ public class Contribuinte implements Serializable{
         this.morada = c.getMorada();
         this.pwd = c.getPwd();
         this.totalGasto = c.getGastos();
+        this.descontos = c.getDescontos();
     }
 
     //Getters
@@ -55,6 +62,9 @@ public class Contribuinte implements Serializable{
     public double getGastos() {
         return this.totalGasto;
     }
+    public ArrayList<Integer> getDescontos() {
+        return this.descontos.stream().collect(Collectors.toCollection(ArrayList::new));
+    }
 
     //Setters
     public void setEmail(String email) {
@@ -71,6 +81,9 @@ public class Contribuinte implements Serializable{
     }
     public void setGastos(double gastos) {
         this.totalGasto = gastos;
+    }
+    public void setDescontos(List<Integer> descontos) {
+        this.descontos = descontos.stream().collect(Collectors.toCollection(ArrayList::new));
     }
 
     //Metodos
@@ -90,7 +103,8 @@ public class Contribuinte implements Serializable{
                c.getNome().equals(nome)     &&
                c.getMorada().equals(morada) &&
                c.getPwd().equals(pwd)       &&
-               c.getGastos() == (totalGasto);
+               c.getGastos() == (totalGasto)&&
+               c.getDescontos().equals(descontos);
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -100,6 +114,7 @@ public class Contribuinte implements Serializable{
         sb.append("Morada: ").append(morada).append("\n");
         sb.append("Pwd: ").append(pwd).append("\n"); // squê era fixe encriptar
         sb.append("Despesa total: ").append(totalGasto).append("\n");
+        sb.append("Descontos: ").append(descontos).append("\n");
         return sb.toString();
     }
 }
