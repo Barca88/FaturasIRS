@@ -308,7 +308,7 @@ public class FaturacaoApp{
         taxaImposto = lerDouble("Insira a taxa de imposto: ");
         
         try{
-            fat.novaFactura(nif_cliente, descricao, valorFact, atividades, taxaImposto);
+            fat.novaFactura(nif_cliente, descricao, valorFact, taxaImposto);
         }
         catch(SemAutorizacaoException e){
             System.out.println(e.getMessage());
@@ -358,6 +358,14 @@ public class FaturacaoApp{
         catch(SemAutorizacaoException e){
             System.out.println(e.getMessage());
         }
+    }
+    
+    private static void top10Cont(){
+        
+    }
+    
+    private static void topXEmpresas(){
+        
     }
     
         private static void imprimeAtividades(Fatura f){

@@ -338,6 +338,7 @@ public class Faturacao implements Serializable {
         }
         else throw new SemAutorizacaoException("O nif pretendido nao corresponde a nenhuma empresa");
     }
+    
     /**
     * Devolve um int correspondente ao tipo de utilizador do "logedIn".
     */
