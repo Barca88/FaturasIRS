@@ -11,13 +11,13 @@ public class Coletivo extends Contribuinte implements Serializable{
     private List<Long> faturas;//ids de faturas passadas por este objeto
 
     public Coletivo (int nif){
-        super(nif,"","","","");
+        super(nif,"","","","",0);
         this.atividades = new ArrayList<Integer>();
         this.deducao = 0;
         this.faturas = new ArrayList<Long>();
     }
     public Coletivo (int nif, String email, String nome, String morada, String pwd){
-        super(nif, email, nome, morada, pwd);
+        super(nif, email, nome, morada, pwd, 0);
         this.atividades = new ArrayList<Integer>();
         this.deducao = 0;
         this.faturas = new ArrayList<Long>();

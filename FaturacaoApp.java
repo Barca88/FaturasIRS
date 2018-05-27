@@ -49,7 +49,7 @@ public class FaturacaoApp{
         String [] contribuinte = {"Despesas emitidas em meu nome",
                                   "Deduçao acumulada pelo meu agregado familiar",
                                   "Corrigir classificaçao de atividade economica de uma fatura",
-                                  "Lista das faturas de uma determinada empresa"
+                                  "Lista das minhas faturas numa determinada empresa"
                                   };
         
         String [] empresa = {"Criar Fatura",
@@ -94,7 +94,7 @@ public class FaturacaoApp{
                             break;
                     case 2: deducaoFamiliar();
                             break;
-                    case 3: corrigirClassFat();
+                    case 3: classFat();
                             break;
                     case 4: faturasEmpresa();
                             break;
@@ -223,7 +223,7 @@ public class FaturacaoApp{
     private static void deducaoFamiliar(){
     }
     
-    private static void corrigirClassFat(){
+    private static void classFat(){
     }
     
     private static void faturasEmpresa(){
@@ -361,12 +361,38 @@ public class FaturacaoApp{
     }
     
     private static void top10Cont(){
-        
+        try{
+            for(Contribuinte c : fat.top10Cont()){
+                System.out.println("NIF: " + c.getNif() + "\nNome: " + c.getNome() + "\nTotal Gastos: " + c.getGastos());
+            }
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
     }
     
     private static void topXEmpresas(){
+        Scanner input = new Scanner(System.in);
+        int x;
         
+        x = lerInt("Quantas empresas pretende verificar?");
+        
+        try{
+            for(Contribuinte c : fat.topXEmpresas(x)){
+                
+                System.out.println("NIF: " + c.getNif() 
+                                           + "\nNome: " + c.getNome() 
+                                           + "\nDeduçao total da Empresa: " + fat.deducaoEmpresa(c.getNif()));
+            }
+        }
+        catch(SemAutorizacaoException e){
+            System.out.println(e.getMessage());
+        }
     }
+    
+    /**
+     *  ===================================== Funçoes Auxiliares =================================
+     */
     
         private static void imprimeAtividades(Fatura f){
             try{

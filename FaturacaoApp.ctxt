@@ -7,7 +7,7 @@ comment10.target=void\ minhasDespesas()
 comment11.params=
 comment11.target=void\ deducaoFamiliar()
 comment12.params=
-comment12.target=void\ corrigirClassFat()
+comment12.target=void\ classFat()
 comment13.params=
 comment13.target=void\ faturasEmpresa()
 comment14.params=
@@ -26,6 +26,7 @@ comment2.params=
 comment2.target=void\ carregarDados()
 comment20.params=f
 comment20.target=void\ imprimeAtividades(Fatura)
+comment20.text=\n\ \ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\ Fun\u00E7oes\ Auxiliares\ \=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\n
 comment21.params=lista
 comment21.target=void\ imprimeFaturas(java.util.ArrayList)
 comment22.params=msg

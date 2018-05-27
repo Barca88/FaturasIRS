@@ -14,15 +14,15 @@ public class Individuo extends Contribuinte implements Serializable{
 
     //Construtor
     public Individuo(int nif){
-        super(nif,"","","","");
+        super(nif,"","","","",0);
         this.lContAgre = new ArrayList<Integer>();
         this.coeficiente = 0.0;
         this.descontos = new ArrayList<Integer>();
     }
     public Individuo(int nif, String email, String nome, String morada,
-                     String pwd, List<Integer> lContAgre,
+                     String pwd, double gastos, List<Integer> lContAgre,
                      double coeficiente, ArrayList<Integer> descontos){
-        super(nif, email, nome, morada, pwd);
+        super(nif, email, nome, morada, pwd, gastos);
         this.lContAgre = lContAgre;
         this.coeficiente = coeficiente;
         this.descontos = descontos;
