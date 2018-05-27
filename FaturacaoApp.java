@@ -3,11 +3,10 @@ import java.util.*;
 import java.time.LocalDate;
 import java.io.FileWriter;
 
-public class FaturacaoApp
-{
+public class FaturacaoApp{
     private static Faturacao fat;
     private static Menu menuprincipal, menucontribuinte, 
-                menuempresa, menuregistar;
+                menuempresa, menuregistar, menuadmin;
     
     public static void main(String [] args){
         String file_name = "faturacao_estado";
@@ -48,28 +47,31 @@ public class FaturacaoApp
                                };
                                
         String [] contribuinte = {"Despesas emitidas em meu nome",
-                                  "Deduçao acumulada por mim",
                                   "Deduçao acumulada pelo meu agregado familiar",
                                   "Corrigir classificaçao de atividade economica de uma fatura",
-                                  "Lista das faturas de uma determinada empresa",
-                                  "Total faturado por uma dada empresa num determinado periodo"
+                                  "Lista das faturas de uma determinada empresa"
                                   };
         
         String [] empresa = {"Criar Fatura",
                              "Facturas por contribuinte num intervalo de datas",
-                             "Facturas por contribuinte e por valor decrescente de despesa",
-                             "Total faturado por uma dada empresa num determinado periodo"
+                             "Facturas por contribuinte e por valor decrescente de despesa"
                              };
         
         String [] registar = {"Registar Contribuinte",
                               "Registar Empresa",
                               "Registar Admin"
                               };
+                              
+        String [] admin = {"10 contribuintes que mais gastam",
+                           "X empresas que mais facturas passaram e o montante de deduçoes fiscais correspondente a cada",
+                           "Total facturado por uma dada empresa num determinado periodo"
+                          };
         
         menuprincipal = new Menu(principal);
         menucontribuinte = new Menu(contribuinte);
         menuempresa = new Menu(empresa);
         menuregistar = new Menu(registar);
+        menuadmin = new Menu(admin);
     }
     
     private static void imprimeMenuPrincipal(){
@@ -90,15 +92,11 @@ public class FaturacaoApp
             switch(menucontribuinte.getOpcao()){
                     case 1: minhasDespesas();
                             break;
-                    case 2: minhaDeducao();
+                    case 2: deducaoFamiliar();
                             break;
-                    case 3: deducaoFamiliar();
+                    case 3: corrigirClassFat();
                             break;
-                    case 4: corrigirClassFat();
-                            break;
-                    case 5: faturasEmpresa();
-                            break;
-                    case 6: faturadoEmpresa();
+                    case 4: faturasEmpresa();
                             break;
                     }
         } while (menucontribuinte.getOpcao()!= 0);
@@ -115,11 +113,24 @@ public class FaturacaoApp
                         break;
                 case 3: faturasValor();
                         break;
-                case 4: faturadoEmpresa();
-                        break;
             }
         } while (menuempresa.getOpcao()!= 0);
         if (menuempresa.getOpcao() == 0) fat.setLogedIn(null);
+    }
+    
+    private static void imprimeMenuAdmin(){
+        do{
+            menuadmin.executa();
+            switch(menuadmin.getOpcao()){
+                case 1: top10Cont();
+                        break;
+                case 2: topXEmpresas();
+                        break;
+                case 3: faturadoEmpresa();
+                        break;
+            }
+        } while (menuadmin.getOpcao()!= 0);
+        if (menuadmin.getOpcao() == 0) fat.setLogedIn(null);
     }
     
     private static void logIn(){
@@ -145,7 +156,7 @@ public class FaturacaoApp
         switch(fat.getTipoUtilizador()){
             case 1: imprimeMenuContribuinte(); break;
             case 2: imprimeMenuEmpresa(); break;
-            //case 3: imprimeMenuAdmin(); break;
+            case 3: imprimeMenuAdmin(); break;
         }
     }
     
@@ -209,9 +220,6 @@ public class FaturacaoApp
         }
     }
     
-    private static void minhaDeducao(){
-    }
-    
     private static void deducaoFamiliar(){
     }
     
@@ -247,7 +255,32 @@ public class FaturacaoApp
     }
     
     private static void faturadoEmpresa(){
-        String nomeEmpresa;
+        int nifEmpresa;
+        double cont;
+        Scanner input = new Scanner(System.in);
+        nifEmpresa = lerInt("Insira o nif da empresa pretendida:");
+        
+        System.out.println("Indique a data inicial: ");
+        int ano = lerInt("Ano: ");
+        int mes = lerInt("Mês: ");
+        int dia = lerInt("Dia: ");
+        
+        LocalDate inicio = LocalDate.of(ano,mes,dia);
+        
+        System.out.println("Indique a data final: ");
+        ano = lerInt("Ano: ");
+        mes = lerInt("Mês: ");
+        dia = lerInt("Dia: ");
+        
+        LocalDate fim = LocalDate.of(ano,mes,dia);
+        
+        try{
+            cont = fat.totalFaturadoColetivo(nifEmpresa,inicio,fim);
+            System.out.println("A empresa" + fat.getUsers().get(nifEmpresa).getNome() + "facturou" + cont + "no total."); 
+        }
+        catch(SemAutorizacaoException e){
+           System.out.println(e.getMessage());
+        }
     }
     
     private static void novaFatura(){

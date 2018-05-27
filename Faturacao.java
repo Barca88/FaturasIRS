@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.lang.Object;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.List;
 
 public class Faturacao implements Serializable {
     private Map<Integer,Contribuinte> users;
@@ -318,6 +319,22 @@ public class Faturacao implements Serializable {
         return map;
         }
         else throw new SemAutorizacaoException("Utilizador nao autorizado");
+    }
+    
+    public double totalFaturadoColetivo(int nif, LocalDate in, LocalDate fim) throws SemAutorizacaoException{
+        double cont = 0;
+        List<Long> fat = new ArrayList<Long>();
+        Coletivo co = null;
+        if(users.get(nif) instanceof Coletivo){
+            co = (Coletivo) this.getUsers().get(nif);
+            fat = co.getFaturas();
+            for(Long id : fat){
+                if(this.getFaturas().get(id).getData().isAfter(in) && this.getFaturas().get(id).getData().isBefore(fim))
+                    cont += this.getFaturas().get(id).getValorPagar();
+            }
+            return cont;
+        }
+        else throw new SemAutorizacaoException("O nif pretendido nao corresponde a nenhuma empresa");
     }
     /**
     * Devolve um int correspondente ao tipo de utilizador do "logedIn".
