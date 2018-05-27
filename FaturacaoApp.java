@@ -295,7 +295,7 @@ public class FaturacaoApp{
         System.out.println("Insira uma descriçao: ");
         descricao = input.nextLine();
         
-        valorFact = lerDouble("Insira o factor de deduçao: ");
+        valorFact = lerDouble("Insira o valor sem IVA: ");
         
         n_atividades = lerInt("Insira o nº de atividades economicas diferentes envolvidas: ");
         
@@ -305,7 +305,7 @@ public class FaturacaoApp{
             n_atividades --;
         }
         
-        taxaImposto = lerDouble("Insira a taxa de imposto: ");
+        taxaImposto = lerDouble("Insira a taxa de imposto(0 a 100): ");
         
         try{
             fat.novaFactura(nif_cliente, descricao, valorFact, taxaImposto);
