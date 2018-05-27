@@ -97,7 +97,6 @@ public class Faturacao implements Serializable {
         st.append("Historico:").append(this.hist).append("\n");
         st.append("Atividades:").append(this.atividades).append("\n");
         return st.toString();
-
     }
 
     //
@@ -106,7 +105,7 @@ public class Faturacao implements Serializable {
      */
     public void gravaObj() throws IOException {
         ObjectOutputStream sv = new ObjectOutputStream(new
-    FileOutputStream("faturacao_estado"));
+            FileOutputStream("faturacao_estado"));
         sv.writeObject(this);
         sv.flush();
         sv.close();
